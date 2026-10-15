@@ -1,6 +1,6 @@
 # Hướng Dẫn Sử Dụng Template Slide Hàng Tuần (Typslides)
 
-Thư mục này chứa khung slide mẫu chung (Boilerplate) viết bằng **Typst** kết hợp package `@preview/typslides:1.3.4`, được định dạng chuẩn theo mẫu [MauBaocaoTuan.pdf](file:///home/loccun/Downloads/MauBaocaoTuan.pdf).
+Thư mục này chứa khung slide mẫu chung (Boilerplate) viết bằng **Typst** kết hợp package `@preview/typslides:1.3.4`, được định dạng chuẩn theo mẫu `MauBaocaoTuan.pdf`.
 
 ---
 
@@ -9,11 +9,8 @@ Thư mục này chứa khung slide mẫu chung (Boilerplate) viết bằng **Typ
 Mỗi tuần mới, bạn chỉ cần sao chép thư mục template sang thư mục tuần tương ứng:
 
 ```bash
-# Ví dụ tạo slide cho tuần 1:
-cp -r template_slide week01_slide
-
-# Hoặc cho tuần 2:
-cp -r template_slide week02_slide
+# Ví dụ tạo slide cho tuần mới:
+cp -r templates/slide week_02/slide
 ```
 
 ---

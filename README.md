@@ -11,35 +11,31 @@
 
 ```text
 .
-├── agents.md               # Quy định môn học, tiêu chí chấm điểm & nguyên tắc code
 ├── templates/
 │   └── slide/              # Template slide dùng chung (@preview/typslides:1.3.4)
-│       ├── main.typ
-│       └── README.md
 │
 ├── week_01/                # Tuần 01 — Chủ đề 04: Clean Architecture & DI
 │   ├── app/                # Flutter source code độc lập
-│   ├── docs/               # Tài liệu phân tích, đặc tả kiến trúc & unit test
-│   ├── slide/              # Slide báo cáo tuần 1 (Typst)
-│   └── README.md           # Hướng dẫn chạy & tổng kết tuần 1
+│   ├── docs/               # Tài liệu phân tích, kiến trúc & phản biện
+│   ├── slide/              # Slide báo cáo (Typst -> PDF 16:9)
+│   └── README.md           # Báo cáo tóm tắt & hướng dẫn chạy
 │
 └── week_XX/                # Các tuần tiếp theo
 ```
 
 ---
 
-## 2. Bảng Theo Dõi Tiến Độ Hàng Tuần
+## 2. Bảng Theo Dõi Tiến Độ
 
 | Tuần | Chủ đề | Công nghệ trọng tâm | Trạng thái | Thư mục |
 |:---:|:---|:---|:---:|:---:|
-| **01** | Chủ đề 04: Kiến trúc Clean Architecture & Dependency Injection | Clean Architecture, DIP, `get_it`, `flutter_bloc`, Mocktail Unit Test | 🔄 Đang triển khai | [week_01/](file:///home/loccun/Documents/Năm 4 - Kì 1/LT Đa nền tảng/Hell/week_01) |
-| **02** | *Đang cập nhật theo tiến độ giảng viên* | — | ⏳ Chờ | — |
+| **01** | Chủ đề 04: Kiến trúc Clean Architecture & Dependency Injection | Clean Architecture, DIP, `get_it`, `flutter_bloc`, Mocktail Unit Test | Hoàn thành | [week_01/](week_01) |
+| **02** | *Cập nhật theo tiến độ giảng viên* | — | ⏳ Chờ | — |
 
 ---
 
-## 3. Tiêu Chuẩn Nộp Bài & Báo Cáo (Tham khảo `agents.md`)
+## 3. Quy Chuẩn Dự Án
 
-- **Slide thuyết trình**: Biên dịch trực tiếp từ Typst sang PDF (tỷ lệ 16:9).
-- **Mã nguồn**: Tuân thủ Clean Code, Dart Style Guide, xử lý ngoại lệ chặt chẽ, commit Git có ý nghĩa.
-- **Demo**: Chạy ổn định trên Real Device / Emulator.
-- **Unit Test**: Đạt kiểm thử độc lập cho tầng Domain với dependency được mock.
+- **Slide**: Soạn bằng Typst (`@preview/typslides:1.3.4`), xuất PDF 16:9 theo form mẫu của trường.
+- **Mã nguồn**: Tuân thủ Clean Code, Dart Style Guide, xử lý ngoại lệ an toàn, commit Git rõ ràng.
+- **Kiểm thử**: Đạt kiểm thử Unit Test độc lập cho tầng Domain với Mock Repository.

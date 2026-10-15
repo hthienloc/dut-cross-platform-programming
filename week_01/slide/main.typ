@@ -174,5 +174,5 @@
   + Flutter Official Documentation: #link("https://docs.flutter.dev")
   + Reso Coder, _Flutter Clean Architecture Proposal_.
   + BLoC State Management: #link("https://bloclibrary.dev")
-  + Mã nguồn Tuần 1: Thư mục `week_01/app` trong repository.
+  + Mã nguồn Tuần 1: #link("https://github.com/hthienloc/dut-cross-platform-programming")
 ]

@@ -19,21 +19,22 @@
 
 ```text
 week_01/
-├── app/                        # Ứng dụng Flutter Demo REST API
+├── app/                        # Mã nguồn ứng dụng Flutter demo & unit tests
 │   ├── lib/
 │   │   ├── core/               # Base UseCase, Error/Failure handling
 │   │   ├── di/                 # Service Locator (get_it injection container)
-│   │   ├── features/post/      # Feature đọc dữ liệu từ REST API
+│   │   ├── features/post/      # Feature đọc dữ liệu từ REST API (3 tầng)
 │   │   │   ├── data/           # Models, DataSources, Repo Implementations
 │   │   │   ├── domain/         # Entities, Repo Interfaces, UseCases
 │   │   │   └── presentation/   # BLoC, Pages, Widgets
 │   │   └── main.dart           # Khởi tạo DI, WidgetsFlutterBinding & App Root
-│   └── test/                   # Unit test tầng Domain với Mocktail
-├── docs/                       # Tài liệu kỹ thuật chuyên sâu & lý thuyết
+│   └── test/                   # Unit tests (Mocktail & bloc_test)
+├── docs/                       # Tài liệu kỹ thuật chuyên sâu & câu hỏi phản biện
 │   ├── 01_SLIDE_OUTLINE.md     # Đề cương slide
 │   ├── 02_THEORY_CLEAN_ARCH.md # Lý thuyết 3 tầng & Nguyên lý DIP
 │   ├── 03_DI_IMPLEMENTATION.md # Service locator get_it & MultiBlocProvider
-│   └── 04_TESTING_SPEC.md      # Đặc tả kiểm thử tầng Domain
+│   ├── 04_TESTING_SPEC.md      # Đặc tả kiểm thử tầng Domain
+│   └── 05_QA_CHEAT_SHEET.md    # Bộ câu hỏi & câu trả lời phản biện
 └── slide/                      # Slide báo cáo Typst (typslides:1.3.4)
     ├── main.typ
     └── main.pdf
@@ -43,22 +44,22 @@ week_01/
 
 ## 3. Hướng Dẫn Chạy & Kiểm Thử
 
-### 2.1. Slide thuyết trình
+### 3.1. Slide thuyết trình
 ```bash
 # Xem slide PDF đã biên dịch:
 xdg-open slide/main.pdf
 
-# Hoặc biên dịch lại khi sửa:
+# Hoặc biên dịch lại:
 typst compile slide/main.typ slide/main.pdf
 ```
 
-### 2.2. Chạy kiểm thử Unit Test (Domain Layer)
+### 3.2. Chạy kiểm thử Unit Test
 ```bash
 cd app
 flutter test
 ```
 
-### 2.3. Chạy ứng dụng Demo
+### 3.3. Chạy ứng dụng Demo
 ```bash
 cd app
 flutter pub get
