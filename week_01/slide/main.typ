@@ -1,7 +1,7 @@
 #import "@preview/typslides:1.3.4": *
 
 // =============================================================
-// CẤU HÌNH GIAO DIỆN CHUNG
+// CẤU HÌNH GIAO DIỆN
 // =============================================================
 #show: typslides.with(
   ratio: "16-9",
@@ -16,7 +16,7 @@
 // 1. TRANG BÌA (Theo MauBaocaoTuan.pdf)
 // =============================================================
 #front-slide(
-  title: "Chủ đề 04: Kiến trúc Clean Architecture & Dependency Injection",
+  title: "Chủ đề 04: Kiến trúc Clean Architecture & Dependency Injection (DI)",
   subtitle: [
     TRƯỜNG ĐẠI HỌC BÁCH KHOA — ĐẠI HỌC ĐÀ NẴNG \
     KHOA ĐIỆN TỬ VÀ TRÍ TUỆ NHÂN TẠO \
@@ -43,126 +43,103 @@
   #v(0.3em)
   #align(center)[
     #table(
-      columns: (1fr, 3fr, 5fr, 2fr),
-      inset: 11pt,
+      columns: (1fr, 3.5fr, 4.5fr, 2fr),
+      inset: 12pt,
       align: (center + horizon, left + horizon, left + horizon, center + horizon),
       fill: (x, y) => if y == 0 { rgb("#edf2f7") } else { none },
       stroke: 0.8pt + rgb("#cbd5e0"),
       [*TT*], [*HỌ VÀ TÊN*], [*NỘI DUNG ĐẢM NHẬN*], [*TỶ LỆ*],
-      [1], [Huỳnh Thiện Lộc \ (106230052)], [Nghiên cứu Clean Architecture, thiết kế tầng Domain, cấu hình DI (get_it), triển khai tầng Data & Presentation (BLoC), viết Unit Test], [100%],
+      [1], [Huỳnh Thiện Lộc \ (106230052)], [Nghiên cứu kiến trúc 3 tầng, thiết kế Domain, cấu hình DI (get_it), viết UI BLoC và Unit Test], [100%],
     )
   ]
 ]
 
 // =============================================================
-// PHẦN I: CƠ SỞ LÝ THUYẾT & NGUYÊN LÝ
+// PHẦN I: KIẾN TRÚC 3 TẦNG & NGUYÊN LÝ DIP
 // =============================================================
 #title-slide[
-  Phần I: Cơ Sở Lý Thuyết & Nguyên Lý Cốt Lõi
+  Phần I: Kiến Trúc 3 Tầng & Nguyên Lý DIP
 ]
 
-#slide(title: "Tổng quan Clean Architecture trong Flutter", outlined: true)[
-  - *Mục tiêu cốt lõi:* Tách biệt các mối bận tâm (*Separation of Concerns*).
-  - *3 Tầng kiến trúc tiêu chuẩn:*
-    1. *Presentation Layer:* Quản lý giao diện (Widgets) và trạng thái (BLoC / Cubit).
-    2. *Domain Layer (Trung tâm):* Chứa thực thể nghiệp vụ (Entities), hành động nghiệp vụ (UseCases) và hợp đồng trừu tượng (Repository Contracts). Thuần Dart, độc lập 100%.
-    3. *Data Layer:* Triển khai truy xuất dữ liệu thực tế (REST API, SQLite, Cache) và hiện thực Repository từ Domain.
+#slide(title: "Phân chia 3 tầng theo Clean Architecture", outlined: true)[
+  - *Presentation (Giao diện):*
+    + `PostPage` (UI hiển thị trắng đen tối giản) & `PostBloc` (quản lý trạng thái).
+    + Chỉ nhận dữ liệu từ Domain, *không biết dữ liệu lấy từ đâu*.
   
-  #v(0.3em)
-  #framed(title: "Quy tắc phụ thuộc (The Dependency Rule)")[
-    Tầng ngoài phụ thuộc vào tầng trong. Tầng trong *tuyệt đối không biết gì* về tầng ngoài.
-  ]
+  - *Domain (Nghiệp vụ - Pure Dart 100%):*
+    + `Post` (Entity), `GetPostsUseCase` (hành động nghiệp vụ), `PostRepository` (Hợp đồng Interface).
+    + Không dính líu Flutter hay HTTP, giúp chạy Unit Test độc lập tính bằng mili-giây.
+
+  - *Data (Nguồn dữ liệu):*
+    + `PostRemoteDataSource` (gọi REST API), `PostModel` (parse JSON), `PostRepositoryImpl` (thực hiện hợp đồng).
 ]
 
 #slide(title: "Nguyên lý Đảo ngược Phụ thuộc (DIP)", outlined: true)[
-  - *Phát biểu (SOLID - 'D'):*
-    + Module cấp cao không phụ thuộc vào module cấp thấp. Cả hai cùng phụ thuộc vào *trừu tượng (Interface)*.
-    + Giao diện trừu tượng không phụ thuộc chi tiết; chi tiết phụ thuộc vào trừu tượng.
+  - *Bản chất của DIP:*
+    + Module cấp cao (`Presentation`) và module cấp thấp (`Data`) cùng phụ thuộc vào *Interface trừu tượng* ở giữa (`Domain`).
 
-  #v(0.3em)
-  #cols(columns: (1fr, 1fr), gutter: 1em)[
-    *Truyền thống (Tight Coupling):* \
-    `Presentation` $-->$ `RemoteDataSource` \
-    #stress[Hệ quả:] Thay đổi API hoặc client mạng sẽ làm vỡ giao diện.
-  ][
-    *Áp dụng DIP (Loose Coupling):* \
-    `Presentation` $-->$ `PostRepository` (Interface) \
-    `PostRepositoryImpl` $-->$ `PostRepository` \
-    #stress[Kết quả:] Chiều phụ thuộc mã nguồn đảo ngược so với chiều thực thi.
-  ]
-]
-
-#slide(title: "Repository Pattern & UseCase (Interactor)", outlined: true)[
-  #cols(columns: (1fr, 1fr), gutter: 1.2em)[
-    *UseCase (Interactor):*
-    - Đại diện cho một hành động nghiệp vụ duy nhất (`Single Responsibility`).
-    - Thực thi qua callable class: `useCase(params)`.
-    - Trả về kết quả an toàn bằng `Either<Failure, T>` (Functional Error Handling).
-  ][
-    *Repository Pattern:*
-    - Là cầu nối trừu tượng giữa Domain và Data.
-    - Che giấu toàn bộ chi tiết kết nối mạng, parsing JSON hay lưu cache.
-    - Giúp tầng Presentation hoàn toàn độc lập với nguồn gốc dữ liệu.
+  #v(0.4em)
+  #framed(title: "Minh chứng trong mã nguồn dự án")[
+    1. Tầng `Domain` đặt ra hợp đồng: `abstract class PostRepository`.
+    2. Tầng `Data` hiện thực hợp đồng: `class PostRepositoryImpl implements PostRepository`.
+    3. Tầng `Presentation` (BLoC) chỉ gọi `GetPostsUseCase`, không bao giờ import tầng Data.
+    $->$ Khi đổi nguồn dữ liệu (REST API $-->$ SQLite hoặc Mock), tầng UI giữ nguyên 100%.
   ]
 ]
 
 // =============================================================
-// PHẦN II: DEPENDENCY INJECTION & LIÊN KẾT PHỤ THUỘC
+// PHẦN II: DEPENDENCY INJECTION VỚI GET_IT
 // =============================================================
 #title-slide[
-  Phần II: Dependency Injection & Khởi Tạo Phụ Thuộc
+  Phần II: Dependency Injection (DI) & Khởi Tạo Phụ Thuộc
 ]
 
 #slide(title: "Service Locator với get_it", outlined: true)[
-  - *Bản chất của DI:* Cung cấp đối tượng phụ thuộc từ bên ngoài vào class thay vì để class tự `new`.
-  - *Các vòng đời đăng ký trong `get_it`:*
-    + `registerLazySingleton`: Chỉ tạo instance 1 lần khi được gọi lần đầu (dùng cho `HttpClient`, `DataSource`, `Repository`, `UseCase`).
-    + `registerFactory`: Mỗi lần gọi tạo mới 1 instance (dùng cho `BLoC/Cubit` gắn theo widget).
-
-  #v(0.3em)
-  #framed(title: "WidgetsFlutterBinding.ensureInitialized()")[
-    Bắt buộc gọi trước khi cấu hình DI bất đồng bộ hoặc nạp dịch vụ native trước `runApp()`.
-  ]
-]
-
-#slide(title: "Liên kết với MultiBlocProvider", outlined: true)[
-  - *Cơ chế hoạt động:*
-    1. `main()` nạp cấu hình `initDependencies()` qua `get_it`.
-    2. `MultiBlocProvider` inject instance BLoC vào cây widget của Flutter.
-    3. UI Widget lắng nghe qua `BlocBuilder` hoặc `context.read<PostBloc>()`.
+  - *Tại sao cần DI?*
+    + Không để các lớp tự khởi tạo (`new`) lẫn nhau, giúp code lỏng lẻo (loose coupling) và dễ test.
   
   #v(0.3em)
-  - *Lợi ích:* BLoC được tự động giải phóng (`close()`) theo vòng đời của Widget Tree, tránh rò rỉ bộ nhớ (Memory Leak).
+  - *Hai cơ chế đăng ký trong file `injection_container.dart`:*
+    + `registerLazySingleton`: Tạo duy nhất 1 bản thể khi được gọi lần đầu (tiết kiệm bộ nhớ cho `HttpClient`, `DataSource`, `Repository`, `UseCase`).
+    + `registerFactory`: Tạo mới 1 bản thể mỗi lần yêu cầu (dùng cho `PostBloc` gắn theo vòng đời màn hình).
+]
+
+#slide(title: "Khởi tạo hệ thống & MultiBlocProvider", outlined: true)[
+  - *`WidgetsFlutterBinding.ensureInitialized()`:*
+    + Đảm bảo Flutter Engine và kênh giao tiếp nền tảng sẵn sàng trước khi nạp service bất đồng bộ (`async`) trong `main()`.
+
+  #v(0.3em)
+  - *`MultiBlocProvider`:*
+    + Lấy instance `PostBloc` từ `get_it` và đưa vào cây widget của Flutter.
+    + Tự động gọi `close()` giải phóng bộ nhớ khi màn hình bị hủy, chống rò rỉ RAM (Memory Leak).
 ]
 
 // =============================================================
-// PHẦN III: DEMO THỰC TẾ & UNIT TEST TẦNG DOMAIN
+// PHẦN III: DEMO THỰC TẾ & UNIT TEST ĐỘC LẬP
 // =============================================================
 #title-slide[
   Phần III: Demo Thực Tế & Unit Test Tầng Domain
 ]
 
-#slide(title: "Kiến trúc ứng dụng Demo REST API", outlined: true)[
-  - *Bài toán:* Ứng dụng đọc danh sách bài viết từ REST API (`jsonplaceholder.typicode.com/posts`).
-  
-  #v(0.2em)
-  - *Luồng thực thi dữ liệu:*
-    `REST API` $-->$ `PostRemoteDataSource` $-->$ `PostModel` $-->$ `PostRepositoryImpl` $-->$ `PostEntity` $-->$ `GetPostsUseCase` $-->$ `PostBloc` $-->$ `PostPage (UI)`.
-
-  #v(0.3em)
-  #framed(title: "Bằng chứng Presentation không phụ thuộc Data Source")[
-    Tầng Presentation chỉ import `domain/`. Khi đổi DataSource sang Mock hoặc Local Cache, không một dòng code nào trong `presentation/` bị thay đổi.
-  ]
+#slide(title: "Ứng dụng Demo REST API tối giản", outlined: true)[
+  - *Nguồn dữ liệu:* JSONPlaceholder (`https://jsonplaceholder.typicode.com/posts`).
+  - *Giao diện:* Phong cách trắng đen tối giản, tập trung hoàn toàn vào việc thể hiện luồng dữ liệu 3 tầng:
+    + Đang tải $-->$ Vòng xoay tiến trình (`Loading`).
+    + Tải xong $-->$ Danh sách bài viết bài bản (`Loaded`).
+    + Mất mạng $-->$ Thông báo lỗi & nút Thử lại (`Error`).
+  - *Bằng chứng tách biệt:* File `post_page.dart` tuyệt đối không có dòng import `data/`.
 ]
 
-#slide(title: "Kịch bản Unit Test Tầng Domain với Mocktail", outlined: true)[
-  - *Kỹ thuật Mocking:* Tạo `MockPostRepository extends Mock implements PostRepository`.
-  - *Đặc điểm:* Kiểm thử độc lập 100% trong mili-giây, không gọi mạng thật, không dựng widget.
+#slide(title: "Unit Test Tầng Domain với Mocktail", outlined: true)[
+  - *Kỹ thuật Mocking:*
+    + Dùng thư viện `mocktail` tạo `MockPostRepository extends Mock implements PostRepository`.
+    + Đóng vai "người cung cấp dữ liệu giả", test độc lập UseCase không cần mạng Internet.
 
   #v(0.3em)
-  #framed(title: "Kịch bản kiểm thử (flutter test)")[
-    - *Test 1 (Success):* Mock trả về `Right(List<Post>)` $-->$ UseCase trả về đúng danh sách bài viết, xác minh repository được gọi đúng 1 lần.
-    - *Test 2 (Failure):* Mock trả về `Left(ServerFailure)` $-->$ UseCase chuyển tiếp failure an toàn, không gây unhandled exception.
+  #framed(title: "Kết quả kiểm thử tự động (flutter test)")[
+    - Test Case 1: Lấy dữ liệu thành công $-->$ UseCase trả về `Right(List<Post>)`.
+    - Test Case 2: Máy chủ phản hồi lỗi $-->$ UseCase trả về `Left(ServerFailure)`.
+    - *Kết quả thực tế:* 5/5 test cases pass 100% trong thời gian $< 1$ giây.
   ]
 ]
 
@@ -171,8 +148,7 @@
 // =============================================================
 #slide(title: "Tài liệu tham khảo", outlined: true)[
   + Robert C. Martin (2017), _Clean Architecture: A Craftsman's Guide to Software Structure and Design_.
-  + Flutter Official Documentation: #link("https://docs.flutter.dev")
-  + Reso Coder, _Flutter Clean Architecture Proposal_.
-  + BLoC State Management: #link("https://bloclibrary.dev")
-  + Mã nguồn Tuần 1: #link("https://github.com/hthienloc/dut-cross-platform-programming")
+  + Flutter Official Documentation: Architectural Overview & Testing.
+  + BLoC Library Documentation: #link("https://bloclibrary.dev")
+  + Mã nguồn hoàn chỉnh: #link("https://github.com/hthienloc/dut-cross-platform-programming")
 ]

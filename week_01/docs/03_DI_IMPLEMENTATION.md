@@ -1,85 +1,36 @@
-# Tài Liệu Kỹ Thuật: Dependency Injection (DI) & Cơ Chế Khởi Tạo Trong Flutter
+# Giải Thích Đơn Giản: Dependency Injection (DI) & get_it
 
 ---
 
-## 1. Khái niệm Dependency Injection (DI) và Service Locator
+## 1. Dependency Injection (DI) Là Gì?
 
-- **Vấn đề**: Khi một class tự khởi tạo các đối tượng phụ thuộc của nó (`final repo = PostRepositoryImpl(remoteDataSource: PostRemoteDataSourceImpl())`), nó bị gắn chặt (tight coupling) với triển khai cụ thể, gây khó khăn cho việc thay thế và viết Unit Test.
-- **Giải pháp**: Áp dụng Inversion of Control (IoC) thông qua Service Locator pattern bằng thư viện `get_it`.
-
----
-
-## 2. Các vòng đời đăng ký trong `get_it`
-
-| Phương thức | Đặc điểm | Trường hợp sử dụng |
-|---|---|---|
-| `registerFactory<T>()` | Mỗi lần yêu cầu `sl<T>()` sẽ tạo ra một instance mới hoàn toàn | Sử dụng cho `BLoC` / `Cubit` (nếu cần quản lý instance theo widget scope) |
-| `registerLazySingleton<T>()` | Chỉ tạo instance một lần duy nhất khi được gọi lần đầu tiên | Sử dụng cho `UseCase`, `Repository`, `DataSource`, `HttpClient` |
-| `registerSingleton<T>()` | Tạo instance ngay thời điểm khởi tạo service locator | Dùng cho các dịch vụ cần nạp sẵn ngay khi mở app |
+- **Hiểu đơn giản:** Thay vì một class tự dùng lệnh `new` để tạo đối tượng nó cần, ta chuẩn bị sẵn các đối tượng từ bên ngoài rồi truyền (inject) vào cho nó.
+- **Tại sao cần DI?**
+  - Giúp các phần tách rời nhau, dễ thay thế (ví dụ: thay API thật bằng API giả khi test).
+  - Quản lý tập trung toàn bộ các dịch vụ tại một file duy nhất: `lib/di/injection_container.dart`.
 
 ---
 
-## 3. Khởi tạo phụ thuộc trong `main.dart`
+## 2. Thư Viện `get_it` Hoạt Động Thế Nào?
 
-### 3.1. Vai trò của `WidgetsFlutterBinding.ensureInitialized()`
-- Flutter Engine cần khởi tạo các binding hệ thống (render tree, window dispatch, platform channels) trước khi gọi bất kỳ hàm native hoặc khởi tạo bất đồng bộ nào (như SharedPreferences, SQLite, Firebase, Network initialization).
-- Nếu thiếu dòng này, việc gọi các API bất đồng bộ trước `runApp()` sẽ gây lỗi `Binding has not yet been initialized`.
+`get_it` giống như một **"Hộp chứa đồ dùng chung" (Service Locator)**:
 
-### 3.2. Cấu hình Container (`injection_container.dart`)
-```dart
-import 'package:get_it/get_it.dart';
-import 'package:http/http.dart' as http;
+1. **`registerLazySingleton`**: Tạo ra đúng 1 bản thể duy nhất khi có người gọi lần đầu tiên.
+   - Dùng cho: `http.Client`, `PostRemoteDataSource`, `PostRepository`, `GetPostsUseCase` (vì các lớp này chỉ xử lý logic, không cần tạo nhiều lần gây tốn RAM).
+2. **`registerFactory`**: Mỗi lần gọi sẽ tạo ra 1 bản thể mới.
+   - Dùng cho: `PostBloc` (để gắn theo vòng đời của màn hình, khi thoát màn hình sẽ giải phóng bộ nhớ).
 
-final sl = GetIt.instance;
+---
 
-Future<void> initDependencies() async {
-  //! Presentation Layer - BLoC
-  sl.registerFactory(() => PostBloc(getPostsUseCase: sl()));
+## 3. `WidgetsFlutterBinding.ensureInitialized()` Là Gì?
 
-  //! Domain Layer - UseCases
-  sl.registerLazySingleton(() => GetPostsUseCase(sl()));
-
-  //! Domain/Data Layer - Repositories
-  sl.registerLazySingleton<PostRepository>(
-    () => PostRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  //! Data Layer - DataSources
-  sl.registerLazySingleton<PostRemoteDataSource>(
-    () => PostRemoteDataSourceImpl(client: sl()),
-  );
-
-  //! Core / External
-  sl.registerLazySingleton(() => http.Client());
-}
-```
-
-### 3.3. Tích hợp với `MultiBlocProvider`
-Trong Clean Architecture, DI cấp thấp (`get_it`) cung cấp instance BLoC chứa đầy đủ usecases. `MultiBlocProvider` của `flutter_bloc` nhận instance này và gắn vào cây widget của Flutter, cho phép các widget con truy xuất trạng thái qua `BlocBuilder` hoặc `context.read<PostBloc>()` mà không cần biết cách thức khởi tạo:
-
+Trong `lib/main.dart`:
 ```dart
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initDependencies();
+  await di.initDependencies();
   runApp(const MyApp());
 }
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<PostBloc>(
-          create: (_) => sl<PostBloc>()..add(FetchPostsEvent()),
-        ),
-      ],
-      child: const MaterialApp(
-        title: 'Clean Architecture Demo',
-        home: PostPage(),
-      ),
-    );
-  }
-}
 ```
+- **Ý nghĩa:** Đảm bảo hệ thống nền tảng của Flutter (giao tiếp với hệ điều hành Android/iOS/Linux) đã sẵn sàng trước khi nạp các cấu hình bất đồng bộ (`async`) trong `initDependencies()`.
+- Nếu không có dòng này, việc gọi các hàm `async` trước `runApp()` có thể gây lỗi treo ứng dụng.
