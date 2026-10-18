@@ -1,13 +1,13 @@
 #import "@preview/typslides:1.3.4": *
 
 // =============================================================
-// CẤU HÌNH GIAO DIỆN
+// CẤU HÌNH GIAO DIỆN CHUNG (TĂNG SIZE DỄ ĐỌC TRÊN MÁY CHIẾU)
 // =============================================================
 #show: typslides.with(
   ratio: "16-9",
   theme: "bluey",
   font: ("Arial", "DejaVu Sans"),
-  font-size: 17pt,
+  font-size: 18.5pt,
   link-style: "color",
   show-progress: true,
 )
@@ -19,7 +19,7 @@
   title: "Chủ đề 04: Kiến trúc Clean Architecture & DI",
   subtitle: [
     TRƯỜNG ĐẠI HỌC BÁCH KHOA — KHOA ĐIỆN TỬ VÀ TRÍ TUỆ NHÂN TẠO \
-    *Báo cáo Tuần 01 — Môn: Lập trình Đa nền tảng*
+    #text(size: 17pt)[*Báo cáo Tuần 01 — Môn: Lập trình Đa nền tảng*]
   ],
   authors: [
     *SVTH:* Huỳnh Thiện Lộc -- *MSSV:* 106230052 \
@@ -33,14 +33,14 @@
 // =============================================================
 #table-of-contents(
   title: "Nội dung báo cáo",
-  text-size: 16pt,
+  text-size: 17pt,
 )
 
 // =============================================================
 // 3. PHÂN CÔNG CÔNG VIỆC (BẢNG WBS)
 // =============================================================
 #slide(title: "Phân công công việc (WBS)", outlined: true)[
-  #v(0.2em)
+  #v(0.1em)
   #align(center)[
     #table(
       columns: (1fr, 3.2fr, 4.8fr, 2fr),
@@ -62,65 +62,65 @@
 ]
 
 #slide(title: "Kiến trúc 3 tầng Clean Architecture", outlined: true)[
-  #v(-0.2em)
+  #v(-0.3em)
   #align(center)[
     #grid(
-      columns: (1.2fr, auto, 1.4fr, auto, 1.2fr),
+      columns: (1.25fr, auto, 1.4fr, auto, 1.25fr),
       align: center + horizon,
       gutter: 0.4cm,
       [
-        #rect(width: 100%, stroke: 1.5pt + rgb("#2b6cb0"), inset: 8pt, radius: 4pt, fill: rgb("#ebf8ff"))[
+        #rect(width: 100%, stroke: 1.5pt + rgb("#2b6cb0"), inset: 9pt, radius: 4pt, fill: rgb("#ebf8ff"))[
           *Presentation* \
-          #text(size: 13pt)[UI Widgets (`PostPage`)\ BLoC (`PostBloc`)]
+          #text(size: 14pt)[UI Widgets (`PostPage`)\ BLoC (`PostBloc`)]
         ]
       ],
-      [#text(size: 18pt, weight: "bold", fill: rgb("#2b6cb0"))[$-->$]],
+      [#text(size: 20pt, weight: "bold", fill: rgb("#2b6cb0"))[$-->$]],
       [
-        #rect(width: 100%, stroke: 2pt + rgb("#2f855a"), inset: 8pt, radius: 4pt, fill: rgb("#f0fff4"))[
+        #rect(width: 100%, stroke: 2pt + rgb("#2f855a"), inset: 9pt, radius: 4pt, fill: rgb("#f0fff4"))[
           *Domain (Pure Dart)* \
-          #text(size: 13pt)[Entities (`Post`)\ UseCases (`GetPosts`)\ Contract (`PostRepo`)]
+          #text(size: 14pt)[Entities (`Post`)\ UseCases (`GetPosts`)\ Contract (`PostRepo`)]
         ]
       ],
-      [#text(size: 18pt, weight: "bold", fill: rgb("#c53030"))[$<--$]],
+      [#text(size: 20pt, weight: "bold", fill: rgb("#c53030"))[$<--$]],
       [
-        #rect(width: 100%, stroke: 1.5pt + rgb("#c53030"), inset: 8pt, radius: 4pt, fill: rgb("#fff5f5"))[
+        #rect(width: 100%, stroke: 1.5pt + rgb("#c53030"), inset: 9pt, radius: 4pt, fill: rgb("#fff5f5"))[
           *Data Layer* \
-          #text(size: 13pt)[Repo Impl (`PostRepoImpl`)\ DataSource (REST API)\ Model (`PostModel`)]
+          #text(size: 14pt)[Repo Impl (`PostRepoImpl`)\ DataSource (REST API)\ Model (`PostModel`)]
         ]
       ]
     )
   ]
-  #v(0.3em)
-  - *Presentation*: Chỉ tương tác với UseCase & Entity, *không import tầng Data*.
-  - *Domain (Trái tim)*: Thuần Dart 100%, chạy Unit Test trong vài mili-giây.
-  - *Data*: Triển khai truy xuất API thật và hiện thực interface từ Domain.
+  #v(0.2em)
+  - *Presentation*: Chỉ tương tác với UseCase & Entity, *không import Data*.
+  - *Domain (Trọng tâm)*: Thuần Dart 100%, chạy Unit Test trong vài mili-giây.
+  - *Data*: Triển khai truy xuất API và hiện thực Interface từ Domain.
 ]
 
 #slide(title: "Nguyên lý Đảo ngược Phụ thuộc (DIP)", outlined: true)[
-  #v(-0.2em)
+  #v(-0.3em)
   #align(center)[
     #grid(
       columns: (1fr, 1.15fr),
       gutter: 0.8cm,
       [
-        #rect(width: 100%, stroke: 1pt + rgb("#e53e3e"), inset: 8pt, radius: 4pt, fill: rgb("#fff5f5"))[
+        #rect(width: 100%, stroke: 1.2pt + rgb("#e53e3e"), inset: 9pt, radius: 4pt, fill: rgb("#fff5f5"))[
           *Truyền thống (Khớp nối chặt)* \
           #v(0.1cm)
           `Presentation` $-->$ `RemoteDataSource` \
           #v(0.1cm)
-          #text(size: 12pt, fill: rgb("#742a2a"))[
+          #text(size: 13.5pt, fill: rgb("#742a2a"))[
             UI phụ thuộc trực tiếp vào HTTP Client. \
-            Đổi API hoặc thư viện mạng $-->$ Vỡ toàn bộ UI.
+            Đổi API / thư viện mạng $-->$ Vỡ toàn bộ UI.
           ]
         ]
       ],
       [
-        #rect(width: 100%, stroke: 1.5pt + rgb("#2f855a"), inset: 8pt, radius: 4pt, fill: rgb("#f0fff4"))[
+        #rect(width: 100%, stroke: 1.5pt + rgb("#2f855a"), inset: 9pt, radius: 4pt, fill: rgb("#f0fff4"))[
           *Áp dụng DIP (Khớp nối lỏng)* \
           #v(0.1cm)
           `Presentation` $-->$ `[PostRepository]` $<--$ `Data` \
           #v(0.1cm)
-          #text(size: 12pt, fill: rgb("#22543d"))[
+          #text(size: 13.5pt, fill: rgb("#22543d"))[
             Cả 2 tầng cùng phụ thuộc Interface ở Domain. \
             Đổi REST API sang SQLite/Mock $-->$ UI giữ nguyên.
           ]
@@ -128,9 +128,9 @@
       ]
     )
   ]
-  #v(0.2em)
-  - *Bản chất*: Chiều phụ thuộc mã nguồn *ngược lại* với chiều thực thi dữ liệu.
-  - *Minh chứng trong code*: `post_page.dart` và `post_bloc.dart` hoàn toàn không có bất kỳ dòng import nào trỏ vào thư mục `data/`.
+  #v(0.1em)
+  - *Bản chất*: Chiều phụ thuộc mã nguồn *ngược lại* chiều luồng thực thi dữ liệu.
+  - *Bằng chứng*: `post_page.dart` và `post_bloc.dart` không import bất kỳ file nào từ `data/`.
 ]
 
 // =============================================================
@@ -141,28 +141,28 @@
 ]
 
 #slide(title: "Service Locator với get_it", outlined: true)[
-  - *Vai trò DI*: Tập trung khởi tạo đối tượng tại `injection_container.dart`, không để class tự `new`.
+  - *Vai trò DI*: Tập trung khởi tạo tại `injection_container.dart`, không để class tự `new`.
   #v(0.1em)
   #align(center)[
     #grid(
       columns: (1fr, 1fr),
       gutter: 0.8cm,
       [
-        #rect(width: 100%, stroke: 1pt + rgb("#3182ce"), inset: 8pt, radius: 4pt, fill: rgb("#ebf8ff"))[
+        #rect(width: 100%, stroke: 1.2pt + rgb("#3182ce"), inset: 9pt, radius: 4pt, fill: rgb("#ebf8ff"))[
           *registerLazySingleton* \
-          #text(size: 12.5pt)[
+          #text(size: 14pt)[
             - `http.Client` (Client mạng) \
             - `PostRemoteDataSource` \
             - `PostRepository` \
             - `GetPostsUseCase` \
-            $->$ _Dùng 1 bản thể duy nhất để tiết kiệm RAM._
+            $->$ _Dùng 1 instance duy nhất để tiết kiệm RAM._
           ]
         ]
       ],
       [
-        #rect(width: 100%, stroke: 1pt + rgb("#805ad5"), inset: 8pt, radius: 4pt, fill: rgb("#faf5ff"))[
+        #rect(width: 100%, stroke: 1.2pt + rgb("#805ad5"), inset: 9pt, radius: 4pt, fill: rgb("#faf5ff"))[
           *registerFactory* \
-          #text(size: 12.5pt)[
+          #text(size: 14pt)[
             - `PostBloc` (Quản lý trạng thái) \
             $->$ _Tạo instance mới mỗi lần màn hình mở._ \
             $->$ _Tự động dispose qua MultiBlocProvider._ \
@@ -183,7 +183,7 @@
   - *`MultiBlocProvider`:*
     + Nhúng instance `PostBloc` từ `get_it` vào Root Widget Tree.
     + Cung cấp State cho `PostPage` thông qua `BlocBuilder<PostBloc, PostState>`.
-    + Đảm bảo đóng BLoC khi màn hình bị hủy.
+    + Tự động gọi `close()` giải phóng bộ nhớ khi widget bị đóng.
 ]
 
 // =============================================================
@@ -194,10 +194,10 @@
 ]
 
 #slide(title: "Luồng dữ liệu Demo (Data Flow)", outlined: true)[
-  #v(0.2em)
+  #v(0.1em)
   #align(center)[
-    #rect(width: 100%, stroke: 1pt + rgb("#cbd5e0"), inset: 10pt, radius: 4pt, fill: rgb("#f7fafc"))[
-      #text(size: 13.5pt, weight: "bold")[
+    #rect(width: 100%, stroke: 1.2pt + rgb("#cbd5e0"), inset: 10pt, radius: 4pt, fill: rgb("#f7fafc"))[
+      #text(size: 14pt, weight: "bold")[
         `JSONPlaceholder API` $-->$ `PostRemoteDataSource` $-->$ `PostModel` \
         #v(0.2em)
         $-->$ `PostRepositoryImpl` $-->$ `Post (Entity)` $-->$ `GetPostsUseCase` \
@@ -206,21 +206,21 @@
       ]
     ]
   ]
-  #v(0.3em)
+  #v(0.2em)
   - *Giao diện tối giản*: Danh sách bài viết trắng đen (`ListTile` + `#ID`), không rườm rà.
   - *Xử lý trạng thái rõ ràng*: Đang tải (`Loading`), Danh sách bài viết (`Loaded`), Mất mạng (`Error` kèm nút Thử lại).
 ]
 
 #slide(title: "Unit Test Tầng Domain với Mocktail", outlined: true)[
-  #v(-0.2em)
+  #v(-0.3em)
   #align(center)[
     #grid(
       columns: (1fr, 1fr),
       gutter: 0.8cm,
       [
-        #rect(width: 100%, stroke: 1.5pt + rgb("#38a169"), inset: 8pt, radius: 4pt, fill: rgb("#f0fff4"))[
+        #rect(width: 100%, stroke: 1.5pt + rgb("#38a169"), inset: 9pt, radius: 4pt, fill: rgb("#f0fff4"))[
           *Kịch bản 1: Thành công (Success)* \
-          #text(size: 12.5pt)[
+          #text(size: 14pt)[
             `MockPostRepo` trả về `Right(List<Post>)` \
             $-->$ `UseCase` nhận đúng danh sách \
             $-->$ Xác minh `getPosts()` gọi đúng 1 lần
@@ -228,9 +228,9 @@
         ]
       ],
       [
-        #rect(width: 100%, stroke: 1.5pt + rgb("#e53e3e"), inset: 8pt, radius: 4pt, fill: rgb("#fff5f5"))[
+        #rect(width: 100%, stroke: 1.5pt + rgb("#e53e3e"), inset: 9pt, radius: 4pt, fill: rgb("#fff5f5"))[
           *Kịch bản 2: Lỗi máy chủ (Failure)* \
-          #text(size: 12.5pt)[
+          #text(size: 14pt)[
             `MockPostRepo` trả về `Left(ServerFailure)` \
             $-->$ `UseCase` bắt lỗi an toàn qua `Either` \
             $-->$ Không throw Exception gây crash
@@ -239,7 +239,7 @@
       ]
     )
   ]
-  #v(0.2em)
+  #v(0.1em)
   - Dùng `mocktail` tạo `MockPostRepository extends Mock implements PostRepository`.
   - Kiểm thử cô lập 100%, không cần kết nối mạng. Kết quả: *5/5 tests pass*.
 ]
@@ -248,13 +248,14 @@
 // TÀI LIỆU THAM KHẢO CỤ THỂ
 // =============================================================
 #slide(title: "Tài liệu tham khảo chi tiết", outlined: true)[
-  + *Robert C. Martin (2017)*, _Clean Architecture: A Craftsman's Guide to Software Structure and Design_, Prentice Hall:
+  #set text(size: 15pt)
+  + *Robert C. Martin (2017)*, _Clean Architecture_, Prentice Hall:
     - *Chương 22*: Cơ sở phân chia 3 tầng độc lập & Quy tắc phụ thuộc (Dependency Rule).
-    - *Chương 11*: Nguyên lý Đảo ngược Phụ thuộc (Dependency Inversion Principle - DIP).
+    - *Chương 11*: Nguyên lý Đảo ngược Phụ thuộc (DIP).
   + *Reso Coder (2019)*, _Flutter Clean Architecture Proposal_:
-    - Kiến trúc phân thư mục, thiết kế `UseCase` & Functional Error Handling với `Either`.
-  + *Felix Angelov*, _Bloc State Management Library Documentation_ (#link("https://bloclibrary.dev")):
-    - Quản lý trạng thái luồng sự kiện (Event-Driven) & cơ chế `MultiBlocProvider`.
+    - Kiến trúc phân thư mục, thiết kế `UseCase` & Functional Error với `Either`.
+  + *Felix Angelov*, _Bloc Library Documentation_ (#link("https://bloclibrary.dev")):
+    - Quản lý trạng thái hướng sự kiện & cơ chế `MultiBlocProvider`.
   + *Thomas Burkhart*, _get_it Service Locator_ (#link("https://pub.dev/packages/get_it")):
     - Vòng đời dịch vụ: `registerLazySingleton` vs `registerFactory`.
 ]
