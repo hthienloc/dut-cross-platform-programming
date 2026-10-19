@@ -47,7 +47,7 @@
 // =============================================================
 #table-of-contents(
   title: "Nội dung báo cáo",
-  text-size: 17pt,
+  text-size: 15pt,
 )
 
 // =============================================================
@@ -236,25 +236,119 @@
   Phần III: Demo Thực Tế & Kết Quả Kiểm Thử
 ]
 
-#slide(title: "Data Flow & Giao diện thực tế", outlined: true)[
+#slide(title: "Sơ đồ luồng từ REST API đến UI", outlined: true)[
+  #v(-0.3em)
+  #text(size: 15pt, weight: "bold", fill: rgb("#2b6cb0"))[1. Chiều gửi yêu cầu (Request Phase):]
+  #v(0.1em)
+  #grid(
+    columns: (1.1fr, auto, 1.1fr, auto, 1.25fr, auto, 1.25fr),
+    gutter: 0.25cm,
+    align: center + horizon,
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#2b6cb0"), inset: 6pt, radius: 4pt, fill: rgb("#ebf8ff"))[
+        #align(left)[
+          #align(center)[*PostPage (UI)*]
+          #v(0.1em)
+          #text(size: 14pt)[Phát sự kiện \ `FetchPostsEvent`.]
+        ]
+      ]
+    ],
+    [#text(size: 16pt, weight: "bold", fill: rgb("#2b6cb0"))[$-->$]],
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#2b6cb0"), inset: 6pt, radius: 4pt, fill: rgb("#ebf8ff"))[
+        #align(left)[
+          #align(center)[*PostBloc*]
+          #v(0.1em)
+          #text(size: 14pt)[Emit `PostLoading`, \ gọi UseCase.]
+        ]
+      ]
+    ],
+    [#text(size: 16pt, weight: "bold", fill: rgb("#2f855a"))[$-->$]],
+    [
+      #rect(width: 100%, stroke: 2pt + rgb("#2f855a"), inset: 6pt, radius: 4pt, fill: rgb("#f0fff4"))[
+        #align(left)[
+          #align(center)[*GetPostsUseCase*]
+          #v(0.1em)
+          #text(size: 14pt)[Gọi hợp đồng \ `PostRepository`.]
+        ]
+      ]
+    ],
+    [#text(size: 16pt, weight: "bold", fill: rgb("#c53030"))[$-->$]],
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#c53030"), inset: 6pt, radius: 4pt, fill: rgb("#fff5f5"))[
+        #align(left)[
+          #align(center)[*RemoteDataSource*]
+          #v(0.1em)
+          #text(size: 14pt)[Gửi `http.get` tới \ JSONPlaceholder.]
+        ]
+      ]
+    ]
+  )
+  #v(0.25em)
+  #text(size: 15pt, weight: "bold", fill: rgb("#2f855a"))[2. Chiều phản hồi & Hiển thị (Response & Render Phase):]
+  #v(0.1em)
+  #grid(
+    columns: (1.25fr, auto, 1.25fr, auto, 1.1fr, auto, 1.1fr),
+    gutter: 0.25cm,
+    align: center + horizon,
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#805ad5"), inset: 6pt, radius: 4pt, fill: rgb("#faf5ff"))[
+        #align(left)[
+          #align(center)[*REST API*]
+          #v(0.1em)
+          #text(size: 14pt)[Trả HTTP 200 + \ mảng JSON bài viết.]
+        ]
+      ]
+    ],
+    [#text(size: 16pt, weight: "bold", fill: rgb("#c53030"))[$-->$]],
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#c53030"), inset: 6pt, radius: 4pt, fill: rgb("#fff5f5"))[
+        #align(left)[
+          #align(center)[*PostRepoImpl*]
+          #v(0.1em)
+          #text(size: 14pt)[Parse `PostModel`, \ bọc `Right(List<Post>)`.]
+        ]
+      ]
+    ],
+    [#text(size: 16pt, weight: "bold", fill: rgb("#2b6cb0"))[$-->$]],
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#2b6cb0"), inset: 6pt, radius: 4pt, fill: rgb("#ebf8ff"))[
+        #align(left)[
+          #align(center)[*PostBloc*]
+          #v(0.1em)
+          #text(size: 14pt)[Nhận `Either`, \ emit `PostLoaded`.]
+        ]
+      ]
+    ],
+    [#text(size: 16pt, weight: "bold", fill: rgb("#2b6cb0"))[$-->$]],
+    [
+      #rect(width: 100%, stroke: 2pt + rgb("#2b6cb0"), inset: 6pt, radius: 4pt, fill: rgb("#ebf8ff"))[
+        #align(left)[
+          #align(center)[*PostPage (UI)*]
+          #v(0.1em)
+          #text(size: 14pt)[Rebuild & render \ `ListView.separated`.]
+        ]
+      ]
+    ]
+  )
+]
+
+#slide(title: "Giao diện thực tế & Trạng thái UI", outlined: true)[
   #v(-0.3em)
   #grid(
-    columns: (1.25fr, 0.95fr),
+    columns: (1.2fr, 1fr),
     gutter: 0.7cm,
     align: (left + horizon, center + horizon),
     [
       #rect(width: 100%, stroke: 1pt + rgb("#cbd5e0"), inset: 8pt, radius: 4pt, fill: rgb("#f7fafc"))[
         #text(size: 15pt, weight: "bold")[
-          REST API $-->$ `RemoteDataSource` \
-          $-->$ `PostModel` $-->$ `PostRepoImpl` \
-          $-->$ `GetPostsUseCase` $-->$ `PostBloc`
+          Quản lý 3 trạng thái BLoC:
         ]
       ]
-      #v(0.3em)
-      - *Xử lý 3 trạng thái BLoC:*
-        - *Loading:* `CircularProgressIndicator`
-        - *Loaded:* `ListView.separated` (`List<Post>`)
-        - *Error:* Báo lỗi & nút *Thử lại*
+      #v(0.2em)
+      - *Loading:* Hiển thị `CircularProgressIndicator` khi đang gửi request qua DataSource.
+      - *Loaded:* Hiển thị danh sách 100 bài viết bằng `ListView.separated`.
+      - *Error:* Thông báo lỗi kết nối kèm nút *Thử lại* (phát lại `FetchPostsEvent`).
     ],
     [
       #rect(stroke: 1pt + rgb("#cbd5e0"), radius: 4pt, inset: 0pt)[
