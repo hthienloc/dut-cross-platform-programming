@@ -30,7 +30,7 @@
 | Tuần | Chủ đề | Công nghệ trọng tâm | Trạng thái | Thư mục |
 |:---:|:---|:---|:---:|:---:|
 | **01** | Chủ đề 04: Kiến trúc Clean Architecture & Dependency Injection | Clean Architecture, DIP, `get_it`, `flutter_bloc`, Mocktail Unit Test | Hoàn thành | [week_01/](week_01) |
-| **02** | *Cập nhật theo tiến độ giảng viên* | — | ⏳ Chờ | — |
+| **02** | Chủ đề 02: Lập trình Bất đồng bộ với Future & Stream trong Flutter | Dart Event Loop, `async/await`, `StreamController`, `StreamBuilder`, Resource Clean-up, `emitsInOrder` Test | Hoàn thành | [week_02/](week_02) |
 
 ---
 

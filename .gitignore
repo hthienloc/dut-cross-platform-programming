@@ -71,3 +71,4 @@ migrate_working_dir/
 
 # Exceptions to keep slide PDFs
 !*.pdf
+flutter-env.sh
