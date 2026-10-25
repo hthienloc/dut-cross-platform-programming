@@ -49,7 +49,7 @@
 // =============================================================
 #table-of-contents(
   title: "Nội dung báo cáo",
-  text-size: 11pt,
+  text-size: 10pt,
 )
 
 // =============================================================
@@ -71,10 +71,10 @@
 ]
 
 // =============================================================
-// PHẦN I: YÊU CẦU ĐỀ BÀI & BÀI TOÁN THỰC TẾ
+// PHẦN I: TỔNG QUAN YÊU CẦU & BÀI TOÁN KỸ THUẬT
 // =============================================================
 #title-slide[
-  Phần I: Yêu Cầu Đề Bài & Bài Toán Thực Tế
+  Phần I: Tổng Quan Yêu Cầu & Bài Toán Kỹ Thuật
 ]
 
 #slide(title: "Yêu cầu kỹ thuật & Phạm vi đề tài (Spec)", outlined: true)[
@@ -114,10 +114,10 @@
 ]
 
 // =============================================================
-// PHẦN II: NỀN TẢNG BẤT ĐỒNG BỘ & VẤN ĐỀ KỸ THUẬT
+// PHẦN II: NỀN TẢNG BẤT ĐỒNG BỘ: DART EVENT LOOP & FUTURE
 // =============================================================
 #title-slide[
-  Phần II: Nền Tảng Bất Đồng Bộ & Vấn Đề Kỹ Thuật
+  Phần II: Nền Tảng Bất Đồng Bộ: Dart Event Loop & Future
 ]
 
 #slide(title: "Cơ chế Event Loop & Hàng đợi trong Dart", outlined: true)[
@@ -196,11 +196,32 @@
   ]
 ]
 
+#slide(title: "Phân loại luồng: Single-subscription vs Broadcast Stream", outlined: true)[
+  #v(-0.3em)
+  #align(center)[
+    #table(
+      columns: (1.5fr, 2fr, 2fr),
+      inset: (x: 8pt, y: 7pt),
+      align: (center + horizon, left + horizon, left + horizon),
+      fill: (x, y) => if y == 0 { rgb("#edf2f7") } else if calc.even(y) { rgb("#f8fafc") } else { none },
+      stroke: 1pt + rgb("#cbd5e0"),
+      [*Đặc điểm*], [*Single-subscription Stream*], [*Broadcast Stream*],
+      [*Số Listener*], [Chỉ đúng *1 listener duy nhất*], [Nhiều listener nghe đồng thời],
+      [*Đăng ký lại*], [Báo lỗi nếu listen lần 2], [Tự do `listen()` và hủy bất kỳ lúc nào],
+      [*Buffer sự kiện*], [Giữ sự kiện trước khi có listener], [Không đệm (bỏ lỡ nếu chưa listen)],
+      [*Khởi tạo Dart*], [`StreamController<T>()`], [`StreamController<T>.broadcast()`],
+      [*Trường hợp dùng*], [Đọc file I/O, nạp tệp zip, HTTP body], [Đồng hồ real-time, cảm biến, WebSocket],
+    )
+  ]
+  #v(0.1em)
+  - *Ứng dụng trong bài:* Dùng `.broadcast()` để nhiều thành phần UI cùng nhận dữ liệu nhịp đếm mà không xung đột.
+]
+
 // =============================================================
-// PHẦN III: THIẾT KẾ & HIỆN THỰC LUỒNG DỮ LIỆU STREAM
+// PHẦN III: KIẾN TRÚC STREAM & QUẢN LÝ VÒNG ĐỜI BỘ NHỚ
 // =============================================================
 #title-slide[
-  Phần III: Thiết Kế & Hiện Thực Luồng Dữ Liệu Stream
+  Phần III: Kiến Trúc Stream & Quản Lý Vòng Đời Bộ Nhớ
 ]
 
 #slide(title: "Cấu trúc luồng với StreamController", outlined: true)[
@@ -292,11 +313,49 @@
   - *Kiểm soát an toàn:* Luôn kiểm tra `!_controller.isClosed` trước khi gọi `sink.add()` để tránh crash lỗi `Bad state: Cannot add event after closing`.
 ]
 
+#slide(title: "Cơ chế Garbage Collection & Khởi tạo an toàn", outlined: true)[
+  - *Cơ chế GC Reachability:* Dart thu hồi bộ nhớ dựa trên đường dẫn tham chiếu (Root Reference):
+  #v(-0.2em)
+  #align(center)[
+    #text(size: 11pt)[
+      #diagram(
+        spacing: (30mm, 10mm),
+        node-stroke: 1.2pt,
+        node-corner-radius: 6pt,
+        node-inset: 7pt,
+
+        node((0, 0), align(center)[
+          #text(11pt, weight: "bold")[Root / Engine] \
+          #text(9pt, fill: rgb("#2b6cb0"))[Event Loop Timer]
+        ], fill: rgb("#ebf8ff"), stroke: 1.2pt + rgb("#2b6cb0"), width: 34mm),
+
+        node((1, 0), align(center)[
+          #text(11pt, weight: "bold")[Timer.periodic] \
+          #text(9pt, fill: rgb("#c53030"))[Chạy ngầm liên tục]
+        ], fill: rgb("#fff5f5"), stroke: 1.2pt + rgb("#e53e3e"), width: 34mm),
+
+        node((2, 0), align(center)[
+          #text(11pt, weight: "bold")[Widget State] \
+          #text(9pt, fill: rgb("#744210"))[Bị giữ tham chiếu]
+        ], fill: rgb("#fefcbf"), stroke: 1.5pt + rgb("#d69e2e"), width: 36mm),
+
+        edge((0, 0), (1, 0), "-|>", [kích hoạt], label-side: left, label-size: 9pt),
+        edge((1, 0), (2, 0), "-|>", [giữ callback `this`], label-side: left, label-size: 9pt, stroke: 1.5pt + rgb("#e53e3e")),
+      )
+    ]
+  ]
+  #v(-0.2em)
+  #text(size: 14pt)[
+    - *Hậu quả khi quên `cancel()`:* Widget đã thoát màn hình nhưng vẫn "sống" trong heap $-->$ Memory Leak.
+    - *Giải pháp triệt để:* Khi `dispose()`, cắt đứt tham chiếu callback và đóng Controller lập tức.
+  ]
+]
+
 // =============================================================
-// PHẦN IV: DEMO THỰC TẾ & KIỂM THỬ TỰ ĐỘNG
+// PHẦN IV: HIỆN THỰC ỨNG DỤNG THỰC TẾ & KIỂM THỬ TỰ ĐỘNG
 // =============================================================
 #title-slide[
-  Phần IV: Demo Thực Tế & Kết Quả Kiểm Thử
+  Phần IV: Hiện Thực Ứng Dụng Thực Tế & Kiểm Thử Tự Động
 ]
 
 #slide(title: "Sơ đồ luồng End-to-End từ Timer đến UI", outlined: true)[
