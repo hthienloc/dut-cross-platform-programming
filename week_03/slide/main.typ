@@ -43,12 +43,13 @@
 )
 
 // =============================================================
-// 2. MỤC LỤC BÁO CÁO (2 CỘT RÕ RÀNG, DỄ ĐỌC)
+// 2. MỤC LỤC BÁO CÁO (2 CỘT RÕ RÀNG, CHỮ TO DỄ ĐỌC)
 // =============================================================
 #slide(title: "Nội dung báo cáo", outlined: false)[
-  #v(0.1em)
-  #columns(2, gutter: 20pt)[
-    #set text(size: 13.5pt)
+  #v(0.2em)
+  #columns(2, gutter: 35pt)[
+    #set text(size: 16pt, weight: "medium")
+    #set par(leading: 9pt)
     #context {
       let subsections = query(<subsection>).dedup()
       enum(
