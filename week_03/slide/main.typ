@@ -94,7 +94,7 @@
 // =============================================================
 // PHẦN 1: CƠ SỞ LÝ THUYẾT & HAI TRƯỜNG PHÁI THIẾT KẾ
 // =============================================================
-#slide(title: "1. Evolution & Origins", outlined: true)[
+#slide(title: "Evolution & Origins", outlined: true)[
   #v(0.1em)
   #grid(
     columns: (1fr, 1fr),
@@ -124,7 +124,7 @@
   )
 ]
 
-#slide(title: "2. Design System Landscape", outlined: true)[
+#slide(title: "Design System Landscape", outlined: true)[
   #v(0.2em)
   - Ngoài Material và Cupertino, thế giới UI/UX còn có các tiêu chuẩn lớn:
     - Fluent Design System (Microsoft): Trọng tâm vào ánh sáng (Light), chiều sâu (Depth), chất liệu bán trong suốt (Mica/Acrylic) và chuyển động mượt mà.
@@ -133,7 +133,7 @@
   - Điểm chung: Đều xây dựng trên hệ thống Design Tokens (màu sắc, khoảng cách lưới, phông chữ) để duy trì tính nhất quán trên diện rộng.
 ]
 
-#slide(title: "3. Cross-Platform Challenge", outlined: true)[
+#slide(title: "Cross-Platform Challenge", outlined: true)[
   #v(0.2em)
   - Sự khác biệt thói quen người dùng (Platform Familiarity):
     - Người dùng Android quen thuộc với gợn sóng Ripple effect, nút hành động nổi FAB, thanh điều hướng đáy dạng viên thuốc.
@@ -143,7 +143,7 @@
     - Tối ưu hóa trải nghiệm tự nhiên, không mang lại cảm giác app web đóng gói hay ngoại lai.
 ]
 
-#slide(title: "4. Visual Comparison", outlined: true)[
+#slide(title: "Visual Comparison", outlined: true)[
   #v(0.1em)
   #grid(
     columns: (1fr, 1fr),
@@ -162,7 +162,7 @@
   )
 ]
 
-#slide(title: "5. Design Paradigms", outlined: true)[
+#slide(title: "Design Paradigms", outlined: true)[
   #v(0.2em)
   #align(center)[
     #table(
@@ -179,7 +179,7 @@
   ]
 ]
 
-#slide(title: "6. Buttons & Touch Targets", outlined: true)[
+#slide(title: "Buttons & Touch Targets", outlined: true)[
   #v(0.1em)
   #align(center)[
     #image("button_comparison.png", width: 90%)
@@ -201,7 +201,7 @@
   )
 ]
 
-#slide(title: "7. Theme & Typography", outlined: true)[
+#slide(title: "Theme & Typography", outlined: true)[
   #v(0.2em)
   - *Material 3 Theme Data:*
     - Sử dụng `ColorScheme.fromSeed(seedColor: ...)` tự động tính 30+ sắc thái màu tương phản chuẩn WCAG.
@@ -216,7 +216,7 @@
 // =============================================================
 // PHẦN 2: 4 TRỤ CỘT NGUYÊN TẮC UX
 // =============================================================
-#slide(title: "8. Core UX Pillars", outlined: true)[
+#slide(title: "Core UX Pillars", outlined: true)[
   #v(0.1em)
   #align(center)[
     #raw-render(
@@ -247,7 +247,7 @@
   - Accessibility: Kích thước vùng bấm tối thiểu $48 times 48$ dp (M3) hoặc $44 times 44$ pt (iOS).
 ]
 
-#slide(title: "9. Consistency & Feedback", outlined: true)[
+#slide(title: "Consistency & Feedback", outlined: true)[
   #v(0.2em)
   - Tính nhất quán nội tại (Internal Consistency):
     - Quy chuẩn hóa toàn bộ khoảng cách lề và padding qua hằng số `AppTokens`.
@@ -257,7 +257,7 @@
     - Tác vụ mạng hoặc xử lý ngầm (asynchronous) hiển thị `AdaptiveLoadingIndicator` và thông báo hoàn tất bằng `SnackBar` (Android) hoặc Card trạng thái (iOS).
 ]
 
-#slide(title: "10. Readability & a11y", outlined: true)[
+#slide(title: "Readability & a11y", outlined: true)[
   #v(0.2em)
   - Phân cấp thị giác rõ ràng (Visual Hierarchy):
     - Tiêu đề cấp 1: Kích cỡ 18--22pt, Font weight: Bold.
@@ -268,7 +268,7 @@
     - Cung cấp thanh kéo điều chỉnh tỉ lệ font chữ ($80% - 140%$) ngay trong ứng dụng.
 ]
 
-#slide(title: "11. UX Controls & Scaling", outlined: true)[
+#slide(title: "UX Controls & Scaling", outlined: true)[
   #v(0.1em)
   #grid(
     columns: (1fr, 1fr),
@@ -290,7 +290,7 @@
 // =============================================================
 // PHẦN 3: KIẾN TRÚC MÃ NGUỒN & THỰC HÀNH DEMO
 // =============================================================
-#slide(title: "12. System Architecture", outlined: true)[
+#slide(title: "System Architecture", outlined: true)[
   #v(0.1em)
   #align(center)[
     #raw-render(
@@ -318,7 +318,7 @@
   - Tách biệt hoàn toàn Presentation Layer (`AdaptivePrimaryButton`, `AdaptiveDialog`) khỏi Business Logic Layer; tái sử dụng 100% logic xử lý async.
 ]
 
-#slide(title: "13. Adaptive Button Code", outlined: true)[
+#slide(title: "Adaptive Button Code", outlined: true)[
   #v(0.1em)
   #text(size: 14pt)[
   ```dart
@@ -345,7 +345,7 @@
   ]
 ]
 
-#slide(title: "14. Adaptive Dialogs", outlined: true)[
+#slide(title: "Adaptive Dialogs", outlined: true)[
   #v(0.1em)
   #grid(
     columns: (1fr, 1fr),
@@ -364,7 +364,7 @@
   )
 ]
 
-#slide(title: "15. Automated Tests", outlined: true)[
+#slide(title: "Automated Tests", outlined: true)[
   #v(0.2em)
   - *4 kịch bản kiểm thử tự động toàn diện (`flutter test`: ~3.2s, 0 warning):*
     - `Launch M3`: Xác thực Render Tree chứa `MaterialApp`, `AppBar`, `NavigationBar`.
@@ -375,7 +375,7 @@
     - `Text Scaling Slider`: Tương tác kéo slider $80% - 140%$ và kiểm tra font dynamic rebuild.
 ]
 
-#slide(title: "16. Conclusion & Trade-offs", outlined: true)[
+#slide(title: "Conclusion & Trade-offs", outlined: true)[
   #v(0.2em)
   - *Kết quả đạt được:*
     - Xây dựng hoàn chỉnh kiến trúc *DualStyle Hub* chuyển đổi mượt mà giữa Material 3 và Cupertino.
@@ -386,7 +386,7 @@
     - Giải pháp tối ưu: Xây dựng tầng abstraction (`AdaptivePrimaryButton`, `AdaptiveDialog`) bọc lấy token thiết kế, cô lập logic rẽ nhánh khỏi màn hình nghiệp vụ.
 ]
 
-#slide(title: "17. References", outlined: true)[
+#slide(title: "References", outlined: true)[
   #v(0.2em)
   - *Design Systems & Guidelines:*
     - Google Material Design 3 Specification: #link("https://m3.material.io")[m3.material.io]
