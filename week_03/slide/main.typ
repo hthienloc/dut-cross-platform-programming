@@ -119,23 +119,23 @@
     gutter: 15pt,
     [
       #rect(width: 100%, stroke: 1.5pt + rgb("#2b6cb0"), inset: 9pt, radius: 6pt, fill: rgb("#ebf8ff"))[
-        #align(center)[*UI — User Interface (Giao diện)*]
+        #align(center)[*UI — User Interface*]
         #v(0.1em)
         #text(size: 13pt)[
           - *Định nghĩa:* Điểm tiếp xúc thị giác trực tiếp giữa người dùng và phần mềm.
-          - *Yếu tố cấu thành:* Màu sắc, kiểu chữ (typography), icon, layout, khoảng cách lề (spacing), bo góc.
-          - *Mục tiêu:* Đẹp mắt, rõ ràng, thẩm mỹ hài hòa, phản ánh đúng nhận diện thương hiệu (brand identity).
+          - *Yếu tố cấu thành:* Color palette, typography, icon, layout, spacing, corner radius.
+          - *Mục tiêu:* Đẹp mắt, rõ ràng, thẩm mỹ hài hòa, phản ánh đúng brand identity.
         ]
       ]
     ],
     [
       #rect(width: 100%, stroke: 1.5pt + rgb("#2f855a"), inset: 9pt, radius: 6pt, fill: rgb("#f0fff4"))[
-        #align(center)[*UX — User Experience (Trải nghiệm)*]
+        #align(center)[*UX — User Experience*]
         #v(0.1em)
         #text(size: 13pt)[
-          - *Định nghĩa:* Cảm xúc, nhận thức và mức độ dễ dàng khi hoàn thành một tác vụ trong app.
-          - *Yếu tố cấu thành:* Luồng đi (user flow), độ trễ phản hồi, công thái học ngón tay, giảm tải nhận thức.
-          - *Mục tiêu:* Hiệu quả, không gây bực bội, thao tác tự nhiên theo mô hình tư duy (mental model).
+          - *Định nghĩa:* Cảm xúc, nhận thức và mức độ dễ dàng khi hoàn thành tác vụ.
+          - *Yếu tố cấu thành:* User flow, feedback latency, thumb-reach ergonomics, cognitive load.
+          - *Mục tiêu:* Hiệu quả, không gây bực bội, thao tác tự nhiên theo mental model.
         ]
       ]
     ],
@@ -164,9 +164,9 @@
         #align(center)[*Google Material Design*]
         #v(0.1em)
         #text(size: 13pt)[
-          - 2014 (M1): Loại bỏ Holo tối tăm, ra mắt triết lý vật liệu giấy & mực kỹ thuật số (Flat + Shadow).
-          - 2018 (M2): Bo góc lớn hơn, chuẩn hóa lưới khoảng cách 8dp.
-          - 2021 (M3 - Material You): Trích xuất Dynamic Color từ hình nền người dùng, cá nhân hóa sâu sắc.
+          - 2014 (M1): Triết lý vật liệu kỹ thuật số Flat & Drop Shadow thay thế Holo.
+          - 2018 (M2): Bo góc lớn hơn, chuẩn hóa 8dp Grid System.
+          - 2021 (M3 - Material You): Dynamic Color sinh tự động từ hình nền, cá nhân hóa sâu sắc.
         ]
       ]
     ],
@@ -175,9 +175,9 @@
         #align(center)[*Apple Cupertino (HIG)*]
         #v(0.1em)
         #text(size: 13pt)[
-          - 2007 (iOS 1-6): Thời kỳ Skeuomorphism (mô phỏng da thuộc, kính bóng, gỗ thật).
-          - 2013 (iOS 7): Cuộc cách mạng Flat Design tối giản của Jony Ive, khai sinh kính mờ (Frosted Blur).
-          - Hiện nay (iOS 15-18): Hoàn thiện 3 trụ cột Clarity, Deference, Depth cùng SF Pro & SF Symbols.
+          - 2007 (iOS 1-6): Skeuomorphism mô phỏng chất liệu đời thực.
+          - 2013 (iOS 7): Flat Design tối giản của Jony Ive, khai sinh Frosted Blur.
+          - Hiện nay (iOS 15-18): 3 trụ cột Clarity, Deference, Depth cùng SF Pro & SF Symbols.
         ]
       ]
     ],
@@ -231,10 +231,10 @@
       align: (left, left, left),
       fill: (x, y) => if y == 0 { rgb("#ebf8ff") } else if calc.even(y) { rgb("#f7fafc") } else { none },
       table.header([*Tiêu chí*], [*Material Design 3 (M3)*], [*Cupertino (Apple HIG)*]),
-      [Triết lý], [Cá nhân hóa, mô phỏng chất liệu giấy], [Tối giản: Clarity, Deference, Depth],
+      [Triết lý], [Cá nhân hóa, Digital Paper & Ink], [Tối giản: Clarity, Deference, Depth],
       [Hệ thống màu], [Dynamic Color sinh từ Seed Color], [CupertinoDynamicColor linh hoạt],
-      [Phân tầng thị giác], [Cao độ (Elevation) & Bề mặt (Surface)], [Kính mờ (Backdrop Blur) & Đường kẻ viền],
-      [Phản hồi chạm], [Hiệu ứng gợn sóng (Ripple / InkWell)], [Giảm độ mờ (Opacity 40%) & Haptic rung],
+      [Phân tầng thị giác], [Elevation & Surface Container], [Backdrop Blur & Thin Dividers],
+      [Phản hồi chạm], [Ripple Effect (InkWell)], [Opacity Reduction (40%) & Haptics],
     )
   ]
 ]
@@ -250,18 +250,18 @@
     gutter: 15pt,
     [
       #text(size: 12.5pt)[
-        - *Material 3 (Trọng tâm cấu trúc trang):*
+        - *Material 3 (Cấu trúc trang):*
           - `Scaffold`: Quản trị layout trang tổng thể (`appBar`, `body`, `bottomNavigationBar`, `snackBar`).
           - `AppBar`: Hỗ trợ `centerTitle: false` (chuẩn Android), `elevation`, `actions`.
-          - `NavigationBar`: Thanh điều hướng đáy dạng viên thuốc (pill indicator), nhãn luôn hiển thị.
+          - `NavigationBar`: Thanh điều hướng đáy dạng pill indicator, nhãn luôn hiển thị.
       ]
     ],
     [
       #text(size: 12.5pt)[
-        - *Cupertino (Trọng tâm phân cấp luồng & Tab):*
+        - *Cupertino (Phân cấp luồng & Tab):*
           - `CupertinoTabScaffold`: Quản trị đa tab độc lập, mỗi tab có stack điều hướng riêng biệt.
           - `CupertinoPageScaffold`: Khung nhìn cho từng trang đơn lẻ, tích hợp `navigationBar`.
-          - `CupertinoNavigationBar`: Header mờ kính (Frosted Glass), `middle` căn giữa, `leading` & `trailing`.
+          - `CupertinoNavigationBar`: Header Frosted Glass, `middle` căn giữa, `leading` & `trailing`.
       ]
     ],
   )
@@ -278,13 +278,13 @@
     gutter: 15pt,
     [
       - *Material 3 Filled Button:*
-        - Độ cao tối thiểu $48 times 48$ dp.
-        - Bo góc $12$ dp, hiệu ứng lan tỏa *InkWell*.
+        - Touch Target tối thiểu $48 times 48$ dp.
+        - Corner radius $12$ dp, hiệu ứng InkWell Ripple.
     ],
     [
       - *Cupertino Button Filled:*
-        - Độ cao tối thiểu $44 times 44$ pt.
-        - Bo góc $10$ pt, hiệu ứng giảm Opacity $40\%$.
+        - Touch Target tối thiểu $44 times 44$ pt.
+        - Corner radius $10$ pt, hiệu ứng Opacity Reduction $40\%$.
     ],
   )
 ]
@@ -332,21 +332,21 @@
 #slide(title: "Consistency & Feedback", outlined: true)[
   #v(0.2em)
   - Tính nhất quán nội tại (Internal Consistency):
-    - Quy chuẩn hóa toàn bộ khoảng cách lề và padding qua hằng số `AppTokens`.
+    - Quy chuẩn hóa toàn bộ spacing và padding qua hằng số `AppTokens`.
     - Tránh việc đặt padding tùy hứng (13, 17, 21...) gây mất cân đối thị giác.
   - Phản hồi tương tác (Interactive Feedback):
     - Thao tác người dùng luôn có phản hồi thị giác trong vòng 100ms.
-    - Tác vụ mạng hoặc xử lý ngầm (asynchronous) hiển thị `AdaptiveLoadingIndicator` và thông báo hoàn tất bằng `SnackBar` (Android) hoặc Card trạng thái (iOS).
+    - Asynchronous tasks hiển thị `AdaptiveLoadingIndicator` và thông báo hoàn tất bằng `SnackBar` (Material) hoặc Status Card (Cupertino).
 ]
 
 #slide(title: "Readability & a11y", outlined: true)[
   #v(0.2em)
   - Phân cấp thị giác rõ ràng (Visual Hierarchy):
-    - Tiêu đề cấp 1: Kích cỡ 18--22pt, Font weight: Bold.
-    - Phụ đề cấp 2: Kích cỡ 14pt, Color độ mờ 70% hoặc Secondary label.
+    - Title Large: 18--22pt, Font weight: Bold.
+    - Body Medium: 14pt, 70% Opacity hoặc Secondary label.
   - Accessibility (a11y) trong mã nguồn Flutter:
     - Sử dụng `Semantics(button: true, label: ...)` hỗ trợ TalkBack và VoiceOver.
-    - Đảm bảo `SizedBox(height: 48)` cho nút bấm Material và 44 cho nút Cupertino để người dùng không bấm trượt.
+    - Đảm bảo `SizedBox(height: 48)` cho Material và 44 cho Cupertino để touch targets an toàn.
     - Cung cấp thanh kéo điều chỉnh tỉ lệ font chữ ($80% - 140%$) ngay trong ứng dụng.
 ]
 
@@ -357,12 +357,12 @@
     gutter: 15pt,
     align: center,
     [
-      #align(center)[*Tùy chỉnh UX (Material 3 Slider)*]
+      #align(center)[*Material 3 Slider (Settings)*]
       #v(0.1em)
       #align(center)[#image("material_settings.png", height: 75%)]
     ],
     [
-      #align(center)[*Tùy chỉnh UX (Cupertino Slider)*]
+      #align(center)[*Cupertino Slider (Settings)*]
       #v(0.1em)
       #align(center)[#image("cupertino_settings.png", height: 75%)]
     ],
@@ -385,13 +385,13 @@
   #v(0.1em)
   #text(size: 13.5pt)[
     - *FilledButton thay vì ElevatedButton:*
-      - Material 3 khuyến nghị FilledButton cho primary action vì màu nền đặc tạo trọng số thị giác (visual prominence) cao nhất, không phụ thuộc vào shadow vốn khó nhìn trong Dark Mode.
+      - M3 khuyến nghị FilledButton cho primary action vì container fill đặc tạo visual prominence cao nhất, không phụ thuộc vào shadow vốn khó nhìn trong Dark Mode.
     - *ChangeNotifier thuần thay vì Provider / Bloc:*
-      - Tránh cài thêm third-party package thừa thãi cho phạm vi quản lý state UI cục bộ (style, dark mode, text scale). Sử dụng native Flutter API nhẹ, dễ bảo trì, zero dependency overhead.
-    - *Lựa chọn Seed Color (`#2196F3` - Material Blue):*
-      - Gam màu xanh công nghệ trung tính, có độ bão hòa (chroma) chuẩn mực trong không gian HCT, giúp thuật toán sinh ra bảng màu tương phản đạt chuẩn WCAG 2.1 AA cho cả Light và Dark mode.
-    - *Hệ thống Token Lưới 8dp (`AppTokens`):*
-      - Bội số của 8dp (8, 16, 24, 32) khớp hoàn hảo với mật độ điểm ảnh của hầu hết màn hình thiết bị di động hiện đại (tỉ lệ 1x, 2x, 3x), triệt tiêu lỗi khử răng cưa và lệch subpixel.
+      - Tránh cài thêm third-party package thừa thãi cho phạm vi quản lý localized UI state (style, dark mode, text scale). Sử dụng native Flutter API nhẹ, dễ maintain, zero dependency overhead.
+    - *Seed Color (`#2196F3` - Material Blue):*
+      - Tone màu công nghệ trung tính, có độ bão hòa (chroma) chuẩn mực trong không gian HCT, giúp thuật toán sinh ra tonal palette tương phản đạt chuẩn WCAG 2.1 AA cho cả Light và Dark mode.
+    - *8dp Grid Tokens (`AppTokens`):*
+      - Bội số của 8dp (8, 16, 24, 32) khớp hoàn hảo với screen pixel densities hiện đại (tỉ lệ 1x, 2x, 3x), triệt tiêu hoàn toàn anti-aliasing artifacts và subpixel deviation.
   ]
 ]
 
