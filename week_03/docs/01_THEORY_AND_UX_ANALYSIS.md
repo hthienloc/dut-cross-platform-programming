@@ -39,7 +39,43 @@ In Flutter, *"Everything is a Widget"*. A Widget is merely an immutable configur
 
 ---
 
-## 3. Overview of the Two Design Paradigms
+## 3. Deep Dive: Scaffold & AppBar Structural Architecture
+
+### 3.1. Material 3 Page Framework
+- **`Scaffold` (Global Page Coordinator)**: Acts as the primary orchestrator of 2D screen real estate in Material Design.
+  - Hosts `appBar`, `body`, `floatingActionButton`, `bottomNavigationBar`, `drawer`, and persistent `bottomSheet`.
+  - Coordinates transient global notifications via `ScaffoldMessenger.of(context).showSnackBar()`.
+- **`AppBar` (Top Header Navigation)**:
+  - Default Android alignment: Left-aligned title (`centerTitle: false`).
+  - Adapts to scrolling dynamics via `scrolledUnderElevation` and tonal surface tinting.
+- **`NavigationBar` (Bottom Navigation)**:
+  - Employs pill-shaped active destination indicators with persistent labels and notification badge slots.
+
+### 3.2. Apple Cupertino Page & Tab Hierarchy
+- **`CupertinoTabScaffold` (Root Tab Coordinator)**:
+  - Root widget managing multi-tab life cycles with isolated navigation stacks for each tab (`tabBuilder`).
+- **`CupertinoPageScaffold` (Per-Tab Single View)**:
+  - Represents individual views hosting the child content and the top `navigationBar`.
+- **`CupertinoNavigationBar` (iOS Header Navigation)**:
+  - Distinct 3-part layout: `leading` (back chevron / button), `middle` (strictly centered title), and `trailing` (action icons).
+  - Built-in optical frosted glass translucent backdrop (`BackdropFilter` with Gaussian blur).
+- **`CupertinoTabBar` (Bottom Tab Bar)**:
+  - Compact icon-and-text layout with frosted glass background; switches tabs without destroying sub-route history.
+
+---
+
+## 4. Engineering Design Decisions & Trade-off Analysis
+
+| Decision Point | Chosen Implementation | Alternative Considered | Technical & UX Rationale |
+| :--- | :--- | :--- | :--- |
+| **Primary Action Button** | `FilledButton` | `ElevatedButton` | M3 guidelines recommend FilledButton for primary actions because solid container fill provides superior visual affordance across both Light and Dark modes without relying on shadows. |
+| **State Architecture** | `ChangeNotifier` (Pure Dart) | `flutter_bloc` / `Provider` | Keeps dependencies zero-overhead and lightweight. For localized UI state (style, dark mode, font scale), built-in `ChangeNotifier` + `ListenableBuilder` is optimal and fully maintainable. |
+| **Seed Color Selection** | `#2196F3` (Material Blue) | Arbitrary Hex `#3F51B5` | Standard digital blue with balanced chroma in the HCT color space, ensuring algorithmically generated tonal palettes strictly satisfy WCAG AA ($\ge 4.5:1$) contrast. |
+| **Layout Spacing System** | 8dp Grid Tokens (`AppTokens`) | Arbitrary Padding (e.g. 13, 17) | Multiples of 8dp map cleanly to standard device physical pixel densities (1x, 2x, 3x), completely avoiding subpixel rendering blur and anti-aliasing artifacts. |
+
+---
+
+## 5. Overview of the Two Design Paradigms
 
 ### 2.0. Historical Evolution & Origins
 - **The Skeuomorphic Era (2007 - 2012)**: Early mobile interfaces mimicked physical real-world textures (stitched leather calendars, glossy glass buttons, wooden bookshelves).

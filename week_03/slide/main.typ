@@ -1,5 +1,4 @@
 #import "@preview/typslides:1.3.4": *
-#import "@preview/diagraph:0.3.3": *
 
 // =============================================================
 // CẤU HÌNH GIAO DIỆN (CHỮ RÕ NÉT TRÊN MÁY CHIẾU)
@@ -47,18 +46,35 @@
 // =============================================================
 #slide(title: "Nội dung báo cáo", outlined: false)[
   #v(0.1em)
-  #columns(2, gutter: 30pt)[
-    #set text(size: 14.5pt, weight: "medium")
-    #set par(leading: 7.5pt)
-    #context {
-      let subsections = query(<subsection>).dedup()
-      enum(
-        ..subsections.map(sub => [
-          #link(sub.location(), sub.value)
-        ])
-      )
-    }
-  ]
+  #context {
+    let subsections = query(<subsection>).dedup()
+    let half = calc.ceil(subsections.len() / 2)
+    let left_items = subsections.slice(0, half)
+    let right_items = subsections.slice(half)
+    
+    set text(size: 13pt, weight: "medium")
+    set par(leading: 6pt)
+    
+    grid(
+      columns: (1fr, 1fr),
+      gutter: 30pt,
+      [
+        #enum(
+          ..left_items.map(sub => [
+            #link(sub.location(), sub.value)
+          ])
+        )
+      ],
+      [
+        #enum(
+          start: half + 1,
+          ..right_items.map(sub => [
+            #link(sub.location(), sub.value)
+          ])
+        )
+      ]
+    )
+  }
 ]
 
 #slide(title: "Requirements (Spec)", outlined: true)[
@@ -70,9 +86,10 @@
       #rect(width: 100%, stroke: 1.5pt + rgb("#2b6cb0"), inset: 10pt, radius: 6pt, fill: rgb("#ebf8ff"))[
         #align(center)[*1. Theoretical Foundation*]
         #v(0.2em)
-        #text(size: 14pt)[
+        #text(size: 13.5pt)[
           - *Overview:* Material Design 3 (Google) vs Cupertino (Apple HIG).
-          - *Core Elements:* `Scaffold`, `AppBar`, theme, typography, color system.
+          - *Scaffold & AppBar:* So sánh cấu trúc khung xương layout nền tảng.
+          - *Theme & Typography:* Cơ chế kế thừa `InheritedWidget` và token hệ thống.
           - *UX Pillars:* Consistency, Interactive Feedback, Readability, a11y.
         ]
       ]
@@ -81,10 +98,11 @@
       #rect(width: 100%, stroke: 1.5pt + rgb("#2f855a"), inset: 10pt, radius: 6pt, fill: rgb("#f0fff4"))[
         #align(center)[*2. Practice & Demo*]
         #v(0.2em)
-        #text(size: 14pt)[
+        #text(size: 13.5pt)[
           - *Implementation:* Unified design system adhering to 8dp grid tokens.
-          - *Design Decisions:* Justify components, themes, and UX trade-offs.
-          - *Automated Verification:* Widget tests for adaptive rendering & a11y bounds.
+          - *Design Decisions:* Giải trình lý do chọn FilledButton, ChangeNotifier, Seed.
+          - *Live Demo:* Trình diễn chuyển đổi phong cách, Dark Mode, font scaling.
+          - *Automated Verification:* Widget tests xác minh a11y bounds ($>= 48$dp / $>= 44$pt).
         ]
       ]
     ],
@@ -127,24 +145,7 @@
 #slide(title: "Flutter Widget Architecture", outlined: true)[
   #v(0.1em)
   #align(center)[
-    #raw-render(
-      ```dot
-      digraph WidgetTree {
-        rankdir=LR;
-        bgcolor="transparent";
-        node [shape=box, style="filled,rounded", fontname="Arial", fontsize=11, margin="0.15,0.08"];
-        edge [color="#4a5568", penwidth=1.5, fontname="Arial", fontsize=10];
-
-        widget [label="Widget (UI Spec)\nImmutable Config", fillcolor="#ebf8ff", color="#3182ce"];
-        element [label="Element (Lifecycle)\nBuildContext Tree", fillcolor="#feebc8", color="#dd6b20"];
-        render [label="RenderObject (Layout)\nPaint & Hit Test", fillcolor="#c6f6d5", color="#38a169"];
-
-        widget -> element [label="createElement()"];
-        element -> render [label="createRenderObject()"];
-      }
-      ```,
-      width: 85%,
-    )
+    #image("widget_tree.svg", width: 85%)
   ]
   #v(0.1em)
   - Cấu trúc chung của Widget trong Flutter:
@@ -238,6 +239,34 @@
   ]
 ]
 
+#slide(title: "Scaffold & AppBar Architecture", outlined: true)[
+  #v(0.05em)
+  #align(center)[
+    #image("scaffold_structure.svg", width: 75%)
+  ]
+  #v(0.05em)
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 15pt,
+    [
+      #text(size: 12.5pt)[
+        - *Material 3 (Trọng tâm cấu trúc trang):*
+          - `Scaffold`: Quản trị layout trang tổng thể (`appBar`, `body`, `bottomNavigationBar`, `snackBar`).
+          - `AppBar`: Hỗ trợ `centerTitle: false` (chuẩn Android), `elevation`, `actions`.
+          - `NavigationBar`: Thanh điều hướng đáy dạng viên thuốc (pill indicator), nhãn luôn hiển thị.
+      ]
+    ],
+    [
+      #text(size: 12.5pt)[
+        - *Cupertino (Trọng tâm phân cấp luồng & Tab):*
+          - `CupertinoTabScaffold`: Quản trị đa tab độc lập, mỗi tab có stack điều hướng riêng biệt.
+          - `CupertinoPageScaffold`: Khung nhìn cho từng trang đơn lẻ, tích hợp `navigationBar`.
+          - `CupertinoNavigationBar`: Header mờ kính (Frosted Glass), `middle` căn giữa, `leading` & `trailing`.
+      ]
+    ],
+  )
+]
+
 #slide(title: "Buttons & Touch Targets", outlined: true)[
   #v(0.1em)
   #align(center)[
@@ -260,13 +289,30 @@
   )
 ]
 
-#slide(title: "Theme & Typography", outlined: true)[
+#slide(title: "Color Systems & Theming", outlined: true)[
   #v(0.1em)
-  - Ứng dụng UI/UX trong `ThemeData` & Dart Token System:
-    - *InheritedWidget Registry:* Theme hoạt động như kho chứa Design Tokens tập trung ở gốc widget tree, giúp mọi component con truy cập mà không cần truyền prop lồng nhau (Prop Drilling).
-    - *Material 3 Dynamic Palette:* Hàm `ColorScheme.fromSeed()` áp dụng toán học không gian màu (HCT color space) sinh tự động 30+ màu tương phản, đảm bảo chữ luôn dễ đọc trên mọi nền.
-    - *Cupertino Dynamic Adaptation:* `CupertinoDynamicColor.withSettings()` tự động đổi mã màu RGB khi người dùng bật Dark Mode hoặc chế độ Tăng độ tương phản của iOS.
-    - *Typography Scale:* Chuẩn hóa hệ thống phân cấp gồm 15 kiểu (`display`, `headline`, `title`, `body`, `label`) tránh việc hardcode `fontSize` tùy tiện.
+  - Ứng dụng UI/UX trong `ThemeData` & Không gian màu:
+    - *InheritedWidget Registry:* Theme hoạt động như kho chứa Design Tokens tập trung ở gốc widget tree, giúp mọi component con truy cập `Theme.of(context)` với độ phức tạp $O(1)$ mà không bị Prop Drilling.
+    - *Material 3 Dynamic Palette:* Hàm `ColorScheme.fromSeed()` áp dụng toán học không gian màu HCT (Hue, Chroma, Tone) sinh tự động bộ 30+ màu tương phản, đảm bảo chữ luôn tương phản rõ ràng trên nền.
+    - *Cupertino Dynamic Adaptation:* `CupertinoDynamicColor.withSettings()` tự động tính toán lại mã màu RGB khi người dùng bật Dark Mode hoặc chế độ Tăng độ tương phản của iOS.
+    - *Dark Mode Semantic Mapping:* Thay vì gán cứng mã màu hex, dùng `colorScheme.surface`, `colorScheme.onSurface` để tự động đảo màu nền/chữ chuẩn xác.
+]
+
+#slide(title: "Typography & Visual Hierarchy", outlined: true)[
+  #v(0.1em)
+  - Chuẩn hóa kiểu chữ và phân cấp thị giác theo thiết kế:
+    - *15 Phân cấp TextTheme:* Gồm 5 nhóm chính (`display`, `headline`, `title`, `body`, `label`) với 3 kích cỡ (Large, Medium, Small) giúp giao diện có trật tự thị giác chặt chẽ.
+    - *Ví dụ gọi thực tế trong mã nguồn Flutter:*
+      #text(size: 13pt)[
+      ```dart
+      Text("Overview Dashboard", style: Theme.of(context).textTheme.titleLarge)
+      Text("Tap card to view details", style: Theme.of(context).textTheme.bodyMedium)
+      ```
+      ]
+    - *Khả năng tự thích ứng (Adaptive Typography):*
+      - Material 3: Sử dụng font Roboto hoặc font hệ thống với `letterSpacing` và `fontWeight` được tinh chỉnh cho màn hình Android.
+      - Cupertino: Tự động map sang San Francisco (SF Pro) với kerning động theo kích cỡ chữ.
+    - *Dynamic Scaling Resilient:* Hỗ trợ scale font từ 80% đến 140% mà không bị vỡ layout (tránh overflow bằng `Flexible` và `Wrap`).
 ]
 
 // =============================================================
@@ -275,27 +321,7 @@
 #slide(title: "Core UX Pillars", outlined: true)[
   #v(0.1em)
   #align(center)[
-    #raw-render(
-      ```dot
-      digraph UX {
-        rankdir=LR;
-        bgcolor="transparent";
-        node [shape=box, style="filled,rounded", fontname="Arial", fontsize=13, margin="0.2,0.1"];
-        edge [dir=both, color="#4a5568", penwidth=1.5];
-
-        c [label="Tính Nhất Quán\n(Consistency)", fillcolor="#ebf8ff", color="#3182ce"];
-        f [label="Phản Hồi Tương Tác\n(Feedback)", fillcolor="#feebc8", color="#dd6b20"];
-        r [label="Khả Năng Đọc\n(Readability)", fillcolor="#c6f6d5", color="#38a169"];
-        a [label="Khả Năng Tiếp Cận\n(Accessibility)", fillcolor="#e9d8fd", color="#805ad5"];
-
-        c -> f;
-        f -> a;
-        a -> r;
-        r -> c;
-      }
-      ```,
-      width: 80%,
-    )
+    #image("ux_pillars.svg", width: 80%)
   ]
   - Consistency: Đồng nhất hệ thống Spacing (Grid 8dp: 8, 16, 24, 32).
   - Feedback: Xác nhận tức thời thao tác chạm, không để màn hình "chết" khi gọi async.
@@ -344,34 +370,29 @@
 ]
 
 // =============================================================
-// PHẦN 3: KIẾN TRÚC MÃ NGUỒN & THỰC HÀNH DEMO
+// PHẦN 3: KIẾN TRÚC MÃ NGUỒN, THIẾT KẾ & THỰC HÀNH DEMO
 // =============================================================
 #slide(title: "System Architecture", outlined: true)[
   #v(0.1em)
   #align(center)[
-    #raw-render(
-      ```dot
-      digraph Architecture {
-        rankdir=LR;
-        bgcolor="transparent";
-        node [shape=box, style="filled,rounded", fontname="Arial", fontsize=12, margin="0.18,0.08"];
-        edge [color="#2b6cb0", penwidth=1.5, fontname="Arial", fontsize=10];
-
-        notifier [label="AppStateNotifier\n(Style & DarkMode)", fillcolor="#bee3f8", color="#2b6cb0"];
-        root [label="Root App Builder\n(Material / Cupertino)", fillcolor="#fed7d7", color="#e53e3e"];
-        home [label="HomeScreen\n(Scaffold / TabScaffold)", fillcolor="#c6f6d5", color="#38a169"];
-        adaptive [label="Adaptive Widgets\n(Button, Dialog, Indicator)", fillcolor="#feebc8", color="#dd6b20"];
-
-        notifier -> root [label="notifyListeners()"];
-        root -> home [label="Rebuild Theme"];
-        home -> adaptive [label="Inject Style"];
-      }
-      ```,
-      width: 95%,
-    )
+    #image("system_architecture.svg", width: 95%)
   ]
   - Trạng thái được quản lý tập trung qua `AppStateNotifier` (`ChangeNotifier`), lắng nghe bởi root widget.
   - Tách biệt hoàn toàn Presentation Layer (`AdaptivePrimaryButton`, `AdaptiveDialog`) khỏi Business Logic Layer; tái sử dụng 100% logic xử lý async.
+]
+
+#slide(title: "Design Decisions", outlined: true)[
+  #v(0.1em)
+  #text(size: 13.5pt)[
+    - *FilledButton thay vì ElevatedButton:*
+      - Material 3 khuyến nghị FilledButton cho primary action vì màu nền đặc tạo trọng số thị giác (visual prominence) cao nhất, không phụ thuộc vào shadow vốn khó nhìn trong Dark Mode.
+    - *ChangeNotifier thuần thay vì Provider / Bloc:*
+      - Tránh cài thêm third-party package thừa thãi cho phạm vi quản lý state UI cục bộ (style, dark mode, text scale). Sử dụng native Flutter API nhẹ, dễ bảo trì, zero dependency overhead.
+    - *Lựa chọn Seed Color (`#2196F3` - Material Blue):*
+      - Gam màu xanh công nghệ trung tính, có độ bão hòa (chroma) chuẩn mực trong không gian HCT, giúp thuật toán sinh ra bảng màu tương phản đạt chuẩn WCAG 2.1 AA cho cả Light và Dark mode.
+    - *Hệ thống Token Lưới 8dp (`AppTokens`):*
+      - Bội số của 8dp (8, 16, 24, 32) khớp hoàn hảo với mật độ điểm ảnh của hầu hết màn hình thiết bị di động hiện đại (tỉ lệ 1x, 2x, 3x), triệt tiêu lỗi khử răng cưa và lệch subpixel.
+  ]
 ]
 
 #slide(title: "Adaptive Button Code", outlined: true)[
@@ -420,6 +441,40 @@
   )
 ]
 
+#slide(title: "Live Application Demo", outlined: true)[
+  #v(0.1em)
+  #grid(
+    columns: (1.1fr, 0.9fr),
+    gutter: 15pt,
+    [
+      #text(size: 13.5pt)[
+        - *Kịch bản trình diễn tương tác trực tiếp:*
+          - *Hot-Swap Style:* Chuyển đổi tức thì Material 3 $arrow.l.r$ Cupertino mà không reload state ứng dụng.
+          - *Theme Mode Toggle:* Chuyển đổi Light Mode $arrow.l.r$ Dark Mode, quan sát `ColorScheme` và `CupertinoDynamicColor` tự tái tạo màu.
+          - *Interactive Feedback:* Bấm nút async hành động để quan sát loading indicator và thông báo phản hồi (< 100ms).
+          - *Accessibility Font Scaling:* Kéo thanh Text Scale từ 80% đến 140%, chứng minh UI co giãn linh hoạt không bị tràn màn hình (Overflow).
+          - *Dialog System:* Bật modal xác nhận trên cả 2 nền tảng.
+      ]
+    ],
+    [
+      #rect(width: 100%, stroke: 1.5pt + rgb("#2b6cb0"), inset: 10pt, radius: 6pt, fill: rgb("#ebf8ff"))[
+        #align(center)[*Chạy App Demo Trực Tiếp*]
+        #v(0.3em)
+        #text(size: 12.5pt)[
+          ```bash
+          cd week_03/app
+          flutter run -d chrome
+          # hoặc thiết bị Android/iOS
+          ```
+          #v(0.2em)
+          - Codebase: Sạch 100%, 0 warning linter.
+          - Kiến trúc mô-đun hóa dễ mở rộng.
+        ]
+      ]
+    ],
+  )
+]
+
 #slide(title: "Automated Tests", outlined: true)[
   #v(0.2em)
   - *4 kịch bản kiểm thử tự động toàn diện (`flutter test`: ~3.2s, 0 warning):*
@@ -435,7 +490,7 @@
   #v(0.2em)
   - *Kết quả đạt được:*
     - Xây dựng hoàn chỉnh kiến trúc *DualStyle Hub* chuyển đổi mượt mà giữa Material 3 và Cupertino.
-    - Áp dụng triệt để 4 trụ cột UX: Spacing Grid 8dp, phản hồi tương tác $<100$ms, độ tương phản WCAG AA $\ge 4.5:1$, vùng chạm an toàn a11y.
+    - Áp dụng triệt để 4 trụ cột UX: Spacing Grid 8dp, phản hồi tương tác $<100$ms, độ tương phản WCAG AA $>= 4.5:1$, vùng chạm an toàn a11y.
     - Kiểm thử tự động đạt 100% với 0 cảnh báo linter (`dart analyze: No issues found!`).
   - *Đánh giá Kỹ thuật & Trade-offs:*
     - *Full Adaptive UI* đem lại trải nghiệm nguyên bản (Native UX) tối đa nhưng tăng chi phí maintain (~1.5x boilerplate so với Unified UI).
