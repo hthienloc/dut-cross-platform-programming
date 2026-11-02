@@ -46,10 +46,10 @@
 // 2. MỤC LỤC BÁO CÁO (2 CỘT RÕ RÀNG, CHỮ TO DỄ ĐỌC)
 // =============================================================
 #slide(title: "Nội dung báo cáo", outlined: false)[
-  #v(0.2em)
-  #columns(2, gutter: 35pt)[
-    #set text(size: 16pt, weight: "medium")
-    #set par(leading: 9pt)
+  #v(0.1em)
+  #columns(2, gutter: 30pt)[
+    #set text(size: 14.5pt, weight: "medium")
+    #set par(leading: 7.5pt)
     #context {
       let subsections = query(<subsection>).dedup()
       enum(
@@ -94,6 +94,65 @@
 // =============================================================
 // PHẦN 1: CƠ SỞ LÝ THUYẾT & HAI TRƯỜNG PHÁI THIẾT KẾ
 // =============================================================
+#slide(title: "UI vs UX Fundamentals", outlined: true)[
+  #v(0.1em)
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 15pt,
+    [
+      #rect(width: 100%, stroke: 1.5pt + rgb("#2b6cb0"), inset: 9pt, radius: 6pt, fill: rgb("#ebf8ff"))[
+        #align(center)[*UI — User Interface (Giao diện)*]
+        #v(0.1em)
+        #text(size: 13pt)[
+          - *Định nghĩa:* Điểm tiếp xúc thị giác trực tiếp giữa người dùng và phần mềm.
+          - *Yếu tố cấu thành:* Màu sắc, kiểu chữ (typography), icon, layout, khoảng cách lề (spacing), bo góc.
+          - *Mục tiêu:* Đẹp mắt, rõ ràng, thẩm mỹ hài hòa, phản ánh đúng nhận diện thương hiệu (brand identity).
+        ]
+      ]
+    ],
+    [
+      #rect(width: 100%, stroke: 1.5pt + rgb("#2f855a"), inset: 9pt, radius: 6pt, fill: rgb("#f0fff4"))[
+        #align(center)[*UX — User Experience (Trải nghiệm)*]
+        #v(0.1em)
+        #text(size: 13pt)[
+          - *Định nghĩa:* Cảm xúc, nhận thức và mức độ dễ dàng khi hoàn thành một tác vụ trong app.
+          - *Yếu tố cấu thành:* Luồng đi (user flow), độ trễ phản hồi, công thái học ngón tay, giảm tải nhận thức.
+          - *Mục tiêu:* Hiệu quả, không gây bực bội, thao tác tự nhiên theo mô hình tư duy (mental model).
+        ]
+      ]
+    ],
+  )
+]
+
+#slide(title: "Flutter Widget Architecture", outlined: true)[
+  #v(0.1em)
+  #align(center)[
+    #raw-render(
+      ```dot
+      digraph WidgetTree {
+        rankdir=LR;
+        bgcolor="transparent";
+        node [shape=box, style="filled,rounded", fontname="Arial", fontsize=11, margin="0.15,0.08"];
+        edge [color="#4a5568", penwidth=1.5, fontname="Arial", fontsize=10];
+
+        widget [label="Widget (UI Spec)\nImmutable Config", fillcolor="#ebf8ff", color="#3182ce"];
+        element [label="Element (Lifecycle)\nBuildContext Tree", fillcolor="#feebc8", color="#dd6b20"];
+        render [label="RenderObject (Layout)\nPaint & Hit Test", fillcolor="#c6f6d5", color="#38a169"];
+
+        widget -> element [label="createElement()"];
+        element -> render [label="createRenderObject()"];
+      }
+      ```,
+      width: 85%,
+    )
+  ]
+  #v(0.1em)
+  - Cấu trúc chung của Widget trong Flutter:
+    - *Everything is a Widget:* Khung trang, căn lề, màu sắc, cử chỉ đều là widget ghép lồng (Composition over Inheritance).
+    - *3 Cây cốt lõi:* Widget Tree (bản vẽ mô tả) $arrow.r$ Element Tree (quản lý ngữ cảnh `BuildContext`) $arrow.r$ Render Tree (tính tọa độ layout & vẽ GPU).
+    - *Cơ chế Theme:* Nhúng `InheritedWidget` ở gốc để các widget con tự động truy vấn `Theme.of(context)` với độ phức tạp $O(1)$.
+]
+
 #slide(title: "Evolution & Origins", outlined: true)[
   #v(0.1em)
   #grid(
@@ -202,15 +261,12 @@
 ]
 
 #slide(title: "Theme & Typography", outlined: true)[
-  #v(0.2em)
-  - *Material 3 Theme Data:*
-    - Sử dụng `ColorScheme.fromSeed(seedColor: ...)` tự động tính 30+ sắc thái màu tương phản chuẩn WCAG.
-    - Cung cấp thang đo 15 kiểu chữ quy chuẩn: `display`, `headline`, `title`, `body`, `label`.
-  - *Cupertino Theme Data:*
-    - Sử dụng `CupertinoThemeData` tập trung vào phông chữ San Francisco (SF Pro).
-    - Hỗ trợ màu sắc thích ứng sáng/tối theo hệ điều hành (`resolveFrom(context)`).
-  - *Hỗ trợ Dark Mode:*
-    - Tách biệt `MaterialThemeConfig.lightTheme()` / `darkTheme()` và `CupertinoThemeConfig.themeData(brightness)`.
+  #v(0.1em)
+  - Ứng dụng UI/UX trong `ThemeData` & Dart Token System:
+    - *InheritedWidget Registry:* Theme hoạt động như kho chứa Design Tokens tập trung ở gốc widget tree, giúp mọi component con truy cập mà không cần truyền prop lồng nhau (Prop Drilling).
+    - *Material 3 Dynamic Palette:* Hàm `ColorScheme.fromSeed()` áp dụng toán học không gian màu (HCT color space) sinh tự động 30+ màu tương phản, đảm bảo chữ luôn dễ đọc trên mọi nền.
+    - *Cupertino Dynamic Adaptation:* `CupertinoDynamicColor.withSettings()` tự động đổi mã màu RGB khi người dùng bật Dark Mode hoặc chế độ Tăng độ tương phản của iOS.
+    - *Typography Scale:* Chuẩn hóa hệ thống phân cấp gồm 15 kiểu (`display`, `headline`, `title`, `body`, `label`) tránh việc hardcode `fontSize` tùy tiện.
 ]
 
 // =============================================================

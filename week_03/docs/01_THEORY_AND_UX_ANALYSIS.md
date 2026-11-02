@@ -16,7 +16,30 @@
 
 ---
 
-## 2. Overview of the Two Design Paradigms
+## 2. Foundations: UI vs UX & Flutter Widget Architecture
+
+### 2.1. Demystifying UI vs UX
+- **User Interface (UI)**: The visual, sensory, and interactive surface of the software product.
+  - *Constituents:* Color palettes, typography hierarchies, icons, spacing systems, elevations, and corner radiuses.
+  - *Engineering Target:* Visual clarity, structural aesthetics, brand fidelity, and adherence to platform ergonomics.
+- **User Experience (UX)**: The holistic internal journey, cognitive load, efficiency, and emotional response of a human operating the system.
+  - *Constituents:* Task friction, feedback latency ($< 100\text{ms}$), error tolerance, thumb-reach ergonomics, and accessibility compliance (WCAG).
+  - *Engineering Target:* Eliminating frustration, respecting mental models, and optimizing task completion velocity.
+
+### 2.2. Flutter Widget Architecture: The 3-Tree Engine
+In Flutter, *"Everything is a Widget"*. A Widget is merely an immutable configuration blueprint:
+1. **Widget Tree (Configuration)**: Declarative, lightweight specifications (`StatelessWidget`, `StatefulWidget`). Recreated rapidly upon rebuild.
+2. **Element Tree (Lifecycle & Context)**: The operational backbone managing widget lifecycle and holding the `BuildContext`. Elements map directly to widget instances and coordinate diffing.
+3. **RenderObject Tree (Layout & Painting)**: Mutable render nodes calculating exact sizing constraints (`BoxConstraints`), layout coordinates, hit-testing, and GPU compositing.
+
+### 2.3. Theme Engine & InheritedWidget in Dart/Flutter
+- **`InheritedWidget` Architecture**: Flutter's `Theme` leverages `InheritedWidget` rooted at the top of the Element Tree. This provides an $O(1)$ lookup mechanism via `Theme.of(context)` without passing props down arbitrarily (avoiding Prop Drilling).
+- **HCT Color Space & `ColorScheme.fromSeed()`**: In Dart, Material 3 utilizes the Hue-Chroma-Tone (HCT) perceptual color space to algorithmically generate accessible tonal palettes from a single seed color, automatically guaranteeing WCAG AA contrast.
+- **Cupertino Dynamic Resolution**: `CupertinoThemeData` coordinates with `CupertinoDynamicColor` to resolve RGBA values dynamically at runtime based on the host OS brightness mode.
+
+---
+
+## 3. Overview of the Two Design Paradigms
 
 ### 2.0. Historical Evolution & Origins
 - **The Skeuomorphic Era (2007 - 2012)**: Early mobile interfaces mimicked physical real-world textures (stitched leather calendars, glossy glass buttons, wooden bookshelves).
