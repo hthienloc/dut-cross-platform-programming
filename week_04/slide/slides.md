@@ -76,32 +76,32 @@ Animation giải quyết 3 bài toán UX lớn: Tính liên tục không gian, D
 
 # 2. Core Terminology & Concepts
 
-<div class="grid grid-cols-2 gap-4 pt-2 text-xs">
-  <div class="p-3 bg-white rounded-lg border-l-4 border-blue-500 shadow-sm">
-    <div class="font-bold text-blue-700 text-sm mb-1">Implicit Animations</div>
-    <div class="text-slate-600 leading-relaxed">
-      <b>Declarative (Tự nội suy):</b> Nhà phát triển chỉ khai báo giá trị đích (Target Value); framework tự động quản lý controller và tính toán biến thiên từng khung hình.
+<div class="grid grid-cols-2 gap-5 pt-3">
+  <div class="p-4 bg-white rounded-xl border-l-4 border-blue-500 shadow-sm">
+    <div class="font-bold text-blue-700 text-base mb-1.5">Implicit Animations</div>
+    <div class="text-slate-700 text-sm leading-relaxed">
+      <b>Declarative (Tự nội suy):</b> Chỉ khai báo giá trị đích; framework tự tính toán vi phân qua từng khung hình.
     </div>
   </div>
 
-  <div class="p-3 bg-white rounded-lg border-l-4 border-amber-500 shadow-sm">
-    <div class="font-bold text-amber-700 text-sm mb-1">Explicit Animations</div>
-    <div class="text-slate-600 leading-relaxed">
-      <b>Imperative (Chủ động điều khiển):</b> Sử dụng <code>AnimationController</code> để chủ động điều khiển phát, lặp, đảo chiều và gắn kết theo tọa độ kéo thả ngón tay.
+  <div class="p-4 bg-white rounded-xl border-l-4 border-amber-500 shadow-sm">
+    <div class="font-bold text-amber-700 text-base mb-1.5">Explicit Animations</div>
+    <div class="text-slate-700 text-sm leading-relaxed">
+      <b>Imperative (Chủ động điều khiển):</b> Dùng <code>AnimationController</code> để phát, lặp, đảo chiều và bám cử chỉ tay.
     </div>
   </div>
 
-  <div class="p-3 bg-white rounded-lg border-l-4 border-green-500 shadow-sm">
-    <div class="font-bold text-green-700 text-sm mb-1">Gesture Arena</div>
-    <div class="text-slate-600 leading-relaxed">
-      <b>Đấu trường phân giải xung đột:</b> Cơ chế trọng tài phân giải tranh chấp khi nhiều bộ nhận diện cử chỉ (Tap, Pan, LongPress) cùng bắt một điểm chạm trên màn hình.
+  <div class="p-4 bg-white rounded-xl border-l-4 border-green-500 shadow-sm">
+    <div class="font-bold text-green-700 text-base mb-1.5">Gesture Arena</div>
+    <div class="text-slate-700 text-sm leading-relaxed">
+      <b>Đấu trường phân giải:</b> Cơ chế trọng tài phân giải tranh chấp khi nhiều cử chỉ cùng bắt một điểm chạm.
     </div>
   </div>
 
-  <div class="p-3 bg-white rounded-lg border-l-4 border-purple-500 shadow-sm">
-    <div class="font-bold text-purple-700 text-sm mb-1">Non-blocking UX</div>
-    <div class="text-slate-600 leading-relaxed">
-      <b>Chuyển động không khóa luồng:</b> Hiệu ứng chuyển động chạy độc lập, không đóng băng hoặc trì hoãn luồng tiếp nhận sự kiện cảm ứng của người dùng.
+  <div class="p-4 bg-white rounded-xl border-l-4 border-purple-500 shadow-sm">
+    <div class="font-bold text-purple-700 text-base mb-1.5">Non-blocking UX</div>
+    <div class="text-slate-700 text-sm leading-relaxed">
+      <b>Không khóa tương tác:</b> Chuyển động chạy độc lập, không đóng băng luồng nhận sự kiện cảm ứng của người dùng.
     </div>
   </div>
 </div>
