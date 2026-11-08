@@ -2,7 +2,7 @@
 #import "@preview/diagraph:0.3.3": *
 
 // =============================================================
-// CẤU HÌNH GIAO DIỆN (16:9, TỐI GIẢN CHỮ, TỐI ĐA SƠ ĐỒ TRỰC QUAN)
+// CẤU HÌNH GIAO DIỆN (16:9, TỐI GIẢN CHỮ, ĐA DẠNG HÓA BIỂU DIỄN THỊ GIÁC)
 // =============================================================
 #show: typslides.with(
   ratio: "16-9",
@@ -25,27 +25,6 @@
   inset: (x: 4pt, y: 1pt),
   radius: 3pt,
 )
-
-// =============================================================
-// COMPONENT DIAGRAM DÙNG CHUNG (TỰ ĐỘNG BỐ TRÍ, ĐỒNG BỘ THEME)
-// =============================================================
-#let flow-diagram(dot-body, dir: "LR", width: 85%) = align(center)[
-  #raw-render(
-    raw(
-      "digraph G {
-        rankdir=" + dir + ";
-        bgcolor=\"transparent\";
-        nodesep=0.22;
-        ranksep=0.32;
-        node [shape=box, style=\"filled,rounded\", fontname=\"Arial\", fontsize=11, margin=\"0.16,0.08\", fillcolor=\"#ebf8ff\", color=\"#3182ce\", penwidth=1.4];
-        edge [color=\"#4a5568\", penwidth=1.4, fontname=\"Arial\", fontsize=10];
-        " + dot-body + "
-      }",
-      lang: "dot",
-    ),
-    width: width,
-  )
-]
 
 // =============================================================
 // 1. TRANG BÌA
@@ -100,36 +79,56 @@
 ]
 
 // =============================================================
-// 3. GIỚI THIỆU & VAI TRÒ CỦA ANIMATION TRONG UI/UX
+// 3. VAI TRÒ CỦA ANIMATION: KIỀNG 3 CHÂN (PILLAR RADAR)
 // =============================================================
 #slide(title: "Animation & UX Roles", outlined: true)[
-  #v(0.05em)
-  #flow-diagram(dir: "LR", width: 92%, "
-    ui [label=\"Static UI Spec\\n(Layout, Màu sắc, Text)\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
-    motion [label=\"Animation Engine\\n(Biến thiên theo thời gian)\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
-    ux [label=\"Cognitive UX Value\\n(Phản hồi tức thì, Giảm tải nhận thức)\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
-    ui -> motion -> ux;
-  ")
-  #v(0.1em)
+  #v(0.4em)
   #grid(
     columns: (1fr, 1fr, 1fr),
-    gutter: 12pt,
+    gutter: 15pt,
     [
-      #rect(width: 100%, stroke: 1pt + rgb("#3182ce"), fill: rgb("#ebf8ff"), inset: 8pt, radius: 6pt)[
-        #align(center)[*1. State Continuity*]
-        #text(size: 12pt)[Giải thích quan hệ không gian khi chuyển trang, loại bỏ cảm giác giật cục.]
+      #rect(width: 100%, height: 72%, stroke: 1.5pt + rgb("#3182ce"), fill: rgb("#ebf8ff"), inset: 12pt, radius: 10pt)[
+        #align(center)[
+          #circle(radius: 24pt, fill: rgb("#3182ce"))[
+            #v(5pt) #text(size: 20pt, fill: white)[*1*]
+          ]
+          #v(0.5em)
+          #text(size: 14pt, weight: "bold", fill: rgb("#2b6cb0"))[State Continuity]
+          #v(0.4em)
+          #text(size: 12pt)[
+            *Tính liên tục không gian:* Loại bỏ hiện tượng giao diện giật cục khi chuyển trang hoặc thay đổi bố cục màn hình.
+          ]
+        ]
       ]
     ],
     [
-      #rect(width: 100%, stroke: 1pt + rgb("#dd6b20"), fill: rgb("#feebc8"), inset: 8pt, radius: 6pt)[
-        #align(center)[*2. Guided Focus*]
-        #text(size: 12pt)[Dẫn dắt mắt người dùng tới vị trí dữ liệu mới xuất hiện trên màn hình.]
+      #rect(width: 100%, height: 72%, stroke: 1.5pt + rgb("#dd6b20"), fill: rgb("#feebc8"), inset: 12pt, radius: 10pt)[
+        #align(center)[
+          #circle(radius: 24pt, fill: rgb("#dd6b20"))[
+            #v(5pt) #text(size: 20pt, fill: white)[*2*]
+          ]
+          #v(0.5em)
+          #text(size: 14pt, weight: "bold", fill: rgb("#c05621"))[Guided Focus]
+          #v(0.4em)
+          #text(size: 12pt)[
+            *Dẫn dắt sự chú ý:* Hướng ánh mắt người dùng theo dõi nguồn gốc xuất hiện của dữ liệu hoặc kết quả xử lý.
+          ]
+        ]
       ]
     ],
     [
-      #rect(width: 100%, stroke: 1pt + rgb("#38a169"), fill: rgb("#c6f6d5"), inset: 8pt, radius: 6pt)[
-        #align(center)[*3. Touch Feedback*]
-        #text(size: 12pt)[Xác nhận cử chỉ chạm trong $<100$ms, triệt tiêu tình trạng bấm nhầm nhiều lần.]
+      #rect(width: 100%, height: 72%, stroke: 1.5pt + rgb("#38a169"), fill: rgb("#c6f6d5"), inset: 12pt, radius: 10pt)[
+        #align(center)[
+          #circle(radius: 24pt, fill: rgb("#38a169"))[
+            #v(5pt) #text(size: 20pt, fill: white)[*3*]
+          ]
+          #v(0.5em)
+          #text(size: 14pt, weight: "bold", fill: rgb("#276749"))[Touch Feedback]
+          #v(0.4em)
+          #text(size: 12pt)[
+            *Phản hồi chạm tức thì:* Xác nhận tương tác $<100$ms, triệt tiêu trạng thái bấm lặp do nghi ngờ máy đơ.
+          ]
+        ]
       ]
     ],
   )
@@ -171,106 +170,162 @@
 ]
 
 // =============================================================
-// PHẦN 1: CƠ SỞ LÝ THUYẾT & KIẾN TRÚC ANIMATION
+// 5. KIẾN TRÚC PHÂN TẦNG: LAYER STACK SANDWICH
 // =============================================================
 #slide(title: "Flutter Animation Architecture", outlined: true)[
-  #v(0.05em)
-  #flow-diagram(dir: "TB", width: 72%, "
-    subgraph cluster_widgets {
-      label=\"TẦNG WIDGETS (KHỞI TẠO)\";
-      fontname=\"Arial\"; fontsize=11; color=\"#2b6cb0\"; style=\"filled,rounded\"; fillcolor=\"#ebf8ff\";
-      w_imp [label=\"Implicit Widgets\\n(AnimatedContainer, Opacity)\", fillcolor=\"#bee3f8\", color=\"#2b6cb0\"];
-      w_exp [label=\"Explicit Widgets\\n(Transition Widgets, AnimatedBuilder)\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
-    }
-    subgraph cluster_engine {
-      label=\"TẦNG ĐIỀU KHIỂN & NỘI SUY\";
-      fontname=\"Arial\"; fontsize=11; color=\"#2f855a\"; style=\"filled,rounded\"; fillcolor=\"#f0fff4\";
-      c_ctrl [label=\"AnimationController\\n(Quản lý tiến trình & thời lượng)\", fillcolor=\"#ffffff\", color=\"#38a169\"];
-      c_tween [label=\"Tween<T> & Curves\\n(Ánh xạ 0.0 -> 1.0 sang giá trị thực)\", fillcolor=\"#ffffff\", color=\"#38a169\"];
-    }
-    subgraph cluster_hardware {
-      label=\"TẦNG PHẦN CỨNG & RENDER LAYER\";
-      fontname=\"Arial\"; fontsize=11; color=\"#805ad5\"; style=\"filled,rounded\"; fillcolor=\"#faf5ff\";
-      h_ticker [label=\"Ticker & Vsync\\n(Đồng bộ xung nhịp GPU 60/120Hz)\", fillcolor=\"#e9d8fd\", color=\"#805ad5\"];
-      h_gpu [label=\"GPU Render Pipeline\\n(Chỉ vẽ Transform Layer, không rebuild Widget)\", fillcolor=\"#ffffff\", color=\"#805ad5\"];
-    }
-    w_imp -> c_tween [label=\"Tự quản lý\"];
-    w_exp -> c_ctrl [label=\"Điều khiển trực tiếp\"];
-    c_ctrl -> c_tween;
-    c_ctrl -> h_ticker [label=\"vsync: this\"];
-    c_tween -> h_gpu;
-  ")
-]
-
-#slide(title: "Implicit vs Explicit Matrix", outlined: true)[
-  #v(0.1em)
-  #flow-diagram(dir: "LR", width: 90%, "
-    subgraph cluster_imp {
-      label=\"IMPLICIT (DECLARATIVE)\";
-      fontname=\"Arial\"; fontsize=12; color=\"#2b6cb0\"; style=\"filled,rounded\"; fillcolor=\"#ebf8ff\";
-      i1 [label=\"Chỉ cần truyền Target Value & Duration\", fillcolor=\"#ffffff\", color=\"#3182ce\"];
-      i2 [label=\"Framework tự quản lý Controller ngầm\", fillcolor=\"#ffffff\", color=\"#3182ce\"];
-      i3 [label=\"ZERO Memory Leak (Tự giải phóng 100%)\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
-      i1 -> i2 -> i3;
-    }
-    subgraph cluster_exp {
-      label=\"EXPLICIT (IMPERATIVE)\";
-      fontname=\"Arial\"; fontsize=12; color=\"#e53e3e\"; style=\"filled,rounded\"; fillcolor=\"#fff5f5\";
-      e1 [label=\"Khởi tạo thủ công AnimationController\", fillcolor=\"#ffffff\", color=\"#e53e3e\"];
-      e2 [label=\"Toàn quyền: forward, reverse, repeat, spring\", fillcolor=\"#ffffff\", color=\"#e53e3e\"];
-      e3 [label=\"BẮT BUỘC dispose() trước super.dispose()\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
-      e1 -> e2 -> e3;
-    }
-  ")
-]
-
-#slide(title: "Explicit Lifecycle & Memory Safety", outlined: true)[
-  #v(0.1em)
-  #flow-diagram(dir: "LR", width: 90%, "
-    state [label=\"State Object\\nwith SingleTickerProvider\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
-    ticker [label=\"Ticker Instance\\n(Vsync Listener)\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
-    controller [label=\"AnimationController\\n(Active Ref)\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
-    safe_dispose [label=\"1. controller.dispose()\\n2. super.dispose()\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
-
-    state -> ticker [label=\"createTicker()\"];
-    ticker -> controller [label=\"Strong Ref\"];
-    controller -> safe_dispose [label=\"Ngắt kết nối\"];
-  ")
-  #v(0.15em)
+  #v(0.2em)
   #align(center)[
-    #rect(stroke: 1pt + rgb("#e53e3e"), fill: rgb("#fff5f5"), inset: 8pt, radius: 6pt)[
+    #stack(
+      spacing: 8pt,
+      rect(width: 90%, height: 48pt, fill: rgb("#ebf8ff"), stroke: 1.5pt + rgb("#3182ce"), radius: 6pt)[
+        #align(center + horizon)[
+          #text(size: 13.5pt, weight: "bold", fill: rgb("#2b6cb0"))[TẦNG WIDGETS] -- `AnimatedContainer` (Implicit) $|$ `SlideTransition` / `ScaleTransition` (Explicit)
+        ]
+      ],
+      rect(width: 90%, height: 48pt, fill: rgb("#f0fff4"), stroke: 1.5pt + rgb("#38a169"), radius: 6pt)[
+        #align(center + horizon)[
+          #text(size: 13.5pt, weight: "bold", fill: rgb("#276749"))[TẦNG ĐIỀU KHIỂN & NỘI SUY] -- `AnimationController` ($0.0 \to 1.0$) $|$ `Tween<T>` $|$ `CurvedAnimation`
+        ]
+      ],
+      rect(width: 90%, height: 48pt, fill: rgb("#fefcbf"), stroke: 1.5pt + rgb("#d69e2e"), radius: 6pt)[
+        #align(center + horizon)[
+          #text(size: 13.5pt, weight: "bold", fill: rgb("#975a16"))[TẦNG LÀM TƯƠI ĐỒNG BỘ] -- `Ticker` & `TickerProvider` (Khóa nhịp VSync 60Hz / 120Hz ProMotion)
+        ]
+      ],
+      rect(width: 90%, height: 48pt, fill: rgb("#faf5ff"), stroke: 1.5pt + rgb("#805ad5"), radius: 6pt)[
+        #align(center + horizon)[
+          #text(size: 13.5pt, weight: "bold", fill: rgb("#6b46c1"))[TẦNG PHẦN CỨNG (GPU)] -- Chỉ vẽ Transform Matrix Layer $|$ *Không bao giờ rebuild Widget con*
+        ]
+      ],
+    )
+  ]
+]
+
+// =============================================================
+// 6. SO SÁNH ĐỐI ĐẦU: SIDE-BY-SIDE MATRIX TABLE
+// =============================================================
+#slide(title: "Implicit vs Explicit Matrix", outlined: true)[
+  #v(0.3em)
+  #align(center)[
+    #table(
+      columns: (1fr, 1.25fr, 1.25fr),
+      inset: 8pt,
+      align: (left, left, left),
+      fill: (x, y) => if y == 0 { rgb("#ebf8ff") } else if calc.even(y) { rgb("#f7fafc") } else { none },
+      table.header([*Đặc Tính Kỹ Thuật*], [*Implicit Animation*], [*Explicit Animation*]),
+      [Mô hình lập trình], [Khai báo (*Declarative*)], [Mệnh lệnh (*Imperative*)],
+      [Quản lý Controller], [Framework tự quản lý 100% ngầm], [Lập trình viên tự khởi tạo & điều khiển],
+      [Khả năng kiểm soát], [Chỉ chạy từ điểm $A \to B$ một chiều], [Toàn quyền: `forward`, `reverse`, `repeat`, `spring`],
+      [Nguy cơ rò rỉ bộ nhớ], [Trắng án (*Zero Memory Leak*)], [Cao (*Bắt buộc phải `dispose()` sạch Ticker*)],
+      [Trường hợp áp dụng], [Nút bấm, thẻ mở rộng, đổi màu state], [Kéo thả cử chỉ, hiệu ứng lặp, Staggered motion],
+    )
+  ]
+]
+
+// =============================================================
+// 7. VÒNG ĐỜI & GIẢI PHÓNG TÀI NGUYÊN: TIMELINE VÒNG ĐỜI
+// =============================================================
+#slide(title: "Explicit Lifecycle & Memory Safety", outlined: true)[
+  #v(0.2em)
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 15pt,
+    [
+      #rect(width: 100%, stroke: 1.5pt + rgb("#38a169"), fill: rgb("#f0fff4"), inset: 10pt, radius: 8pt)[
+        #align(center)[*1. Giai Đoạn Khởi Tạo (Mount)*]
+        #v(0.2em)
+        #text(size: 12.5pt)[
+          - `initState()` kích hoạt.
+          - `SingleTickerProviderStateMixin` trói `Ticker` với xung VSync hệ thống.
+          - Ticker giữ tham chiếu mạnh (*Strong Ref*) tới State.
+        ]
+      ]
+    ],
+    [
+      #rect(width: 100%, stroke: 1.5pt + rgb("#e53e3e"), fill: rgb("#fff5f5"), inset: 10pt, radius: 8pt)[
+        #align(center)[*2. Giai Đoạn Giải Phóng (Unmount)*]
+        #v(0.2em)
+        #text(size: 12.5pt)[
+          - *Bước 1:* `controller.dispose()` $\to$ Hủy Ticker & ngắt kết nối.
+          - *Bước 2:* `super.dispose()` $\to$ Dọn dẹp State an toàn.
+          - Nếu làm ngược: *Framework Assertion Crash & Memory Leak!*
+        ]
+      ]
+    ],
+  )
+  #v(0.3em)
+  #align(center)[
+    #rect(width: 90%, stroke: 1pt + rgb("#c53030"), fill: rgb("#fff5f5"), inset: 6pt, radius: 6pt)[
       #text(size: 12.5pt, fill: rgb("#c53030"))[
-        *Quy tắc giải phóng bắt buộc:* Luôn gọi `controller.dispose()` trước `super.dispose()` để ngắt Ticker listener.
+        *Nguyên lý cốt lõi:* Ticker còn sống $\to$ GC không thể thu hồi State $\to$ Tràn bộ nhớ Heap vĩnh viễn.
       ]
     ]
   ]
 ]
 
+// =============================================================
+// 8. ĐẤU TRƯỜNG CỬ CHỈ: PHỄU LOẠI TRỪ (FUNNEL FILTER)
+// =============================================================
 #slide(title: "Gesture Arena & Disambiguation", outlined: true)[
   #v(0.1em)
-  #flow-diagram(dir: "LR", width: 90%, "
-    pointer [label=\"PointerDown\\n(Hit-testing)\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
-    arena [label=\"Gesture Arena\\n(Tap, Horizontal, Vertical)\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
-    slop [label=\"Touch Slop (> 18dp)\\nTrajectory Check\", fillcolor=\"#faf5ff\", color=\"#805ad5\"];
-    win [label=\"1. Self-elimination\\n2. Declare Winner\\n3. Last-Man-Standing\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
-
-    pointer -> arena [label=\"Register\"];
-    arena -> slop [label=\"Finger moves\"];
-    slop -> win [label=\"Disambiguation\"];
-  ")
+  #align(center)[
+    #stack(
+      spacing: 6pt,
+      rect(width: 85%, height: 42pt, fill: rgb("#ebf8ff"), stroke: 1.5pt + rgb("#3182ce"), radius: 6pt)[
+        #align(center + horizon)[*BƯỚC 1: TIẾP NHẬN CHẠM (PointerDown)* -- Tất cả Recognizer thỏa tọa độ cùng vào Arena]
+      ],
+      rect(width: 70%, height: 42pt, fill: rgb("#feebc8"), stroke: 1.5pt + rgb("#dd6b20"), radius: 6pt)[
+        #align(center + horizon)[*BƯỚC 2: MÀNG LỌC TOUCH SLOP ($>18$dp)* -- Đo vector di chuyển; sai hướng tự rút lui (*Self-elimination*)]
+      ],
+      rect(width: 55%, height: 42pt, fill: rgb("#c6f6d5"), stroke: 1.5pt + rgb("#38a169"), radius: 6pt)[
+        #align(center + horizon)[*BƯỚC 3: CHIẾN THẮNG (Declare Win)* -- Nhận diện thành công; loại bỏ toàn bộ đối thủ còn lại]
+      ],
+    )
+  ]
+  #v(0.2em)
+  #align(center)[
+    #text(size: 12.5pt)[
+      *Quy tắc phân cấp Cha - Con:* Widget con được nạp vào Arena trước $\to$ Ưu tiên xử lý *First-Come, First-Served*.
+    ]
+  ]
 ]
 
+// =============================================================
+// 9. THƯỚC ĐO THỜI GIAN UX: HORIZONTAL GAUGE
+// =============================================================
 #slide(title: "UX Motion Principles & Latency", outlined: true)[
-  #v(0.1em)
-  #flow-diagram(dir: "LR", width: 88%, "
-    t1 [label=\"< 100ms\\nPhản hồi xúc giác\\n(Instant Touch Feedback)\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
-    t2 [label=\"150ms - 350ms\\nChuyển cảnh tối ưu\\n(Smooth Transition)\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
-    t3 [label=\"> 500ms\\nNgưỡng gây ức chế\\n(Perceived Delay)\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
-
-    t1 -> t2 [label=\"Natural Easing\"];
-    t2 -> t3 [label=\"Tránh dùng\"];
-  ")
-  #v(0.1em)
+  #v(0.3em)
+  #align(center)[
+    #grid(
+      columns: (1fr, 1.8fr, 1.2fr),
+      gutter: 10pt,
+      [
+        #rect(width: 100%, height: 60pt, fill: rgb("#c6f6d5"), stroke: 1.5pt + rgb("#38a169"), radius: 8pt)[
+          #align(center + horizon)[
+            #text(size: 14pt, weight: "bold", fill: rgb("#276749"))[< 100 ms] \
+            #text(size: 11pt)[Phản hồi xúc giác tức thì]
+          ]
+        ]
+      ],
+      [
+        #rect(width: 100%, height: 60pt, fill: rgb("#ebf8ff"), stroke: 1.5pt + rgb("#3182ce"), radius: 8pt)[
+          #align(center + horizon)[
+            #text(size: 14pt, weight: "bold", fill: rgb("#2b6cb0"))[150 ms -- 350 ms] \
+            #text(size: 11pt)[Chuyển cảnh tối ưu (Natural Easing)]
+          ]
+        ]
+      ],
+      [
+        #rect(width: 100%, height: 60pt, fill: rgb("#fed7d7"), stroke: 1.5pt + rgb("#e53e3e"), radius: 8pt)[
+          #align(center + horizon)[
+            #text(size: 14pt, weight: "bold", fill: rgb("#9b2c2c"))[> 500 ms] \
+            #text(size: 11pt)[Cảm giác giật lag, gây ức chế]
+          ]
+        ]
+      ],
+    )
+  ]
+  #v(0.3em)
   #grid(
     columns: (1fr, 1fr),
     gutter: 15pt,
@@ -379,18 +434,33 @@
   ]
 ]
 
+// =============================================================
+// 14. CÂY QUYẾT ĐỊNH KỸ THUẬT: NHỊ PHÂN HÌNH HỌC (DIAMOND DECISION)
+// =============================================================
 #slide(title: "Engineering Decision Tree", outlined: true)[
-  #v(0.05em)
-  #flow-diagram(dir: "TB", width: 62%, "
-    q1 [label=\"Nhu cầu tạo chuyển động?\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
-    q2 [label=\"Có cần lặp / đảo chiều /\\ngắn kết cử chỉ kéo thả?\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
-    ans_imp [label=\"CHỌN IMPLICIT ANIMATION\\n- AnimatedContainer\\n- Zero Memory Leak, cực nhanh\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
-    ans_exp [label=\"CHỌN EXPLICIT ANIMATION\\n- AnimationController + Ticker\\n- Bắt buộc quản lý dispose()\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
+  #v(0.1em)
+  #align(center)[
+    #raw-render(
+      ```dot
+      digraph DecisionTree {
+        rankdir=TB;
+        bgcolor="transparent";
+        nodesep=0.3;
+        ranksep=0.35;
+        node [fontname="Arial", fontsize=11, margin="0.14,0.08"];
+        edge [color="#4a5568", penwidth=1.4, fontname="Arial", fontsize=10];
 
-    q1 -> q2;
-    q2 -> ans_imp [label=\"Không\"];
-    q2 -> ans_exp [label=\"Có\"];
-  ")
+        q [shape=diamond, style="filled", fillcolor="#feebc8", color="#dd6b20", label="Cần lặp lại / đảo chiều /\ngắn kết cử chỉ kéo thả?"];
+        ans_imp [shape=box, style="filled,rounded", fillcolor="#c6f6d5", color="#38a169", label="CHỌN IMPLICIT ANIMATION\n- AnimatedContainer, AnimatedOpacity\n- Khai báo nhanh, Zero Memory Leak 100%"];
+        ans_exp [shape=box, style="filled,rounded", fillcolor="#fed7d7", color="#e53e3e", label="CHỌN EXPLICIT ANIMATION\n- AnimationController + Ticker\n- Bắt buộc quản lý dispose() nghiêm ngặt"];
+
+        q -> ans_imp [label="Không"];
+        q -> ans_exp [label="Có"];
+      }
+      ```,
+      width: 80%,
+    )
+  ]
 ]
 
 // =============================================================
