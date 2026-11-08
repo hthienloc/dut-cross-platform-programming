@@ -100,10 +100,46 @@
 ]
 
 // =============================================================
-// 3. YÊU CẦU ĐỀ BÀI (SPEC)
+// 3. GIỚI THIỆU & VAI TRÒ CỦA ANIMATION TRONG UI/UX
+// =============================================================
+#slide(title: "Animation & UX Roles", outlined: true)[
+  #v(0.05em)
+  #flow-diagram(dir: "LR", width: 92%, "
+    ui [label=\"Static UI Spec\\n(Layout, Màu sắc, Text)\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
+    motion [label=\"Animation Engine\\n(Biến thiên theo thời gian)\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
+    ux [label=\"Cognitive UX Value\\n(Phản hồi tức thì, Giảm tải nhận thức)\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
+    ui -> motion -> ux;
+  ")
+  #v(0.1em)
+  #grid(
+    columns: (1fr, 1fr, 1fr),
+    gutter: 12pt,
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#3182ce"), fill: rgb("#ebf8ff"), inset: 8pt, radius: 6pt)[
+        #align(center)[*1. State Continuity*]
+        #text(size: 12pt)[Giải thích quan hệ không gian khi chuyển trang, loại bỏ cảm giác giật cục.]
+      ]
+    ],
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#dd6b20"), fill: rgb("#feebc8"), inset: 8pt, radius: 6pt)[
+        #align(center)[*2. Guided Focus*]
+        #text(size: 12pt)[Dẫn dắt mắt người dùng tới vị trí dữ liệu mới xuất hiện trên màn hình.]
+      ]
+    ],
+    [
+      #rect(width: 100%, stroke: 1pt + rgb("#38a169"), fill: rgb("#c6f6d5"), inset: 8pt, radius: 6pt)[
+        #align(center)[*3. Touch Feedback*]
+        #text(size: 12pt)[Xác nhận cử chỉ chạm trong $<100$ms, triệt tiêu tình trạng bấm nhầm nhiều lần.]
+      ]
+    ],
+  )
+]
+
+// =============================================================
+// 4. YÊU CẦU ĐỀ BÀI (SPEC)
 // =============================================================
 #slide(title: "Requirements (Spec)", outlined: true)[
-  #v(0.3em)
+  #v(0.2em)
   #grid(
     columns: (1fr, 1fr),
     gutter: 20pt,
@@ -288,40 +324,47 @@
     gutter: 15pt,
     align: center,
     [
-      #align(center)[*Thẻ Ban Đầu (At Rest)*]
+      #align(center)[*1. At Rest (Initial State)*]
       #v(0.1em)
-      #image("app_overview.png", height: 75%)
+      #image("comp_implicit_rest.png", width: 95%)
     ],
     [
-      #align(center)[*Thẻ Mở Rộng (AnimatedContainer)*]
+      #align(center)[*2. Interpolated (Expanded State)*]
       #v(0.1em)
-      #image("implicit_expanded.png", height: 75%)
+      #image("comp_implicit_expanded.png", width: 95%)
     ],
   )
+  #v(0.1em)
+  #align(center)[
+    #text(size: 13pt)[
+      *AnimatedContainer:* Tự động biến đổi kích thước, màu sắc & viền khi Target Value thay đổi.
+    ]
+  ]
 ]
 
 #slide(title: "Explicit & Gestures: Spring Physics", outlined: true)[
   #v(0.1em)
   #grid(
-    columns: (1fr, 1.1fr),
+    columns: (1fr, 1fr),
     gutter: 15pt,
-    align: horizon,
+    align: center,
     [
-      #align(center)[
-        #image("explicit_dragged.png", height: 78%)
-      ]
+      #align(center)[*1. At Rest State*]
+      #v(0.1em)
+      #image("comp_drag_rest.png", width: 95%)
     ],
     [
-      #text(size: 13pt)[
-        - *Tương tác Kéo thả 2D:*
-          - `onPanUpdate`: Cập nhật trực tiếp delta offset và góc nghiêng thẻ.
-        - *Hồi phục bằng mô phỏng vật lý:*
-          - `onPanEnd`: Trích xuất vận tốc `velocity` của ngón tay.
-          - `SpringSimulation(spring, 0.0, 1.0, -velocity)` giúp thẻ nảy về gốc $(0,0)$ tự nhiên.
-        - *Interruptible:* Chạm lại giữa chừng lập tức hủy chuyển động hồi phục để đón cử chỉ mới.
-      ]
+      #align(center)[*2. 2D Dragged & Tilt Angle*]
+      #v(0.1em)
+      #image("comp_drag_active.png", width: 95%)
     ],
   )
+  #v(0.1em)
+  #align(center)[
+    #text(size: 13pt)[
+      *Gesture Tracking + SpringSimulation:* Xoay góc theo tọa độ kéo, buông tay lập tức nảy về gốc $(0, 0)$.
+    ]
+  ]
 ]
 
 #slide(title: "Automated Verification & Tests", outlined: true)[
