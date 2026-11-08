@@ -1,86 +1,102 @@
-# Kịch Bản Thuyết Trình: Animation & Cử Chỉ Nâng Cao
+# Kịch Bản Thuyết Trình: Animation & Cử Chỉ Nâng Cao Trong Flutter
 
 ---
 
 ### Slide 1: Advanced Animations & Gestures in Flutter
-Em xin báo cáo Chủ đề 08: Animation và Cử chỉ nâng cao trong Flutter được Thầy phân công.
+Em xin báo cáo Chủ đề 08: Animation và Cử chỉ nâng cao trong Flutter được Thầy phân công. Bài báo cáo sẽ đi sâu vào bản chất cách Flutter xử lý chuyển động ở tầng Render Pipeline và cơ chế giải quyết xung đột khi người dùng tương tác cử chỉ trên màn hình.  
+*(Chuyển slide)* Ngay sau đây là cấu trúc nội dung chi tiết của buổi báo cáo.
 
 ---
 
 ### Slide 2: Agenda
-Nội dung gồm 2 phần: Cơ chế kiến trúc cốt lõi và Triển khai thực tế trên Demo App.
+Nội dung được chia làm 2 phần rõ rệt: Phần 1 mổ xẻ nền tảng lý thuyết từ kiến trúc 4 tầng, ma trận so sánh, quản lý vòng đời bộ nhớ đến đấu trường Gesture Arena. Phần 2 là minh chứng thực tế trên ứng dụng Demo và kết quả kiểm thử tự động.  
+*(Chuyển slide)* Trước khi đi vào code, ta cần hiểu rõ tại sao animation lại đóng vai trò sống còn trong trải nghiệm người dùng.
 
 ---
 
 ### Slide 3: 1. Animation & UX Roles
-Animation giải quyết 3 bài toán UX lớn: duy trì liên tục không gian chuyển cảnh, dẫn hướng mắt đến dữ liệu mới, và phản hồi xúc giác tức thời dưới 100ms.
+Animation không sinh ra để trang trí mà giải quyết 3 bài toán nhận thức cốt lõi: duy trì tính liên tục không gian giúp mắt không bị sốc khi đổi màn hình, dẫn dắt sự chú ý vào đúng vị trí dữ liệu vừa cập nhật, và phản hồi xúc giác tức thời dưới 100ms để người dùng biết máy đã nhận lệnh, tránh việc bấm đúp nhiều lần.  
+*(Chuyển slide)* Dựa trên những vai trò này, đề tài đặt ra các yêu cầu kỹ thuật cụ thể cần đạt được.
 
 ---
 
 ### Slide 4: 2. Technical Requirements
-Đề bài yêu cầu phân tích 2 trường phái Implicit - Explicit, cơ chế phân giải Gesture Arena, và bảo đảm chuyển động Non-blocking không cản trở thao tác.
+Về mặt lý thuyết, đề bài yêu cầu làm chủ cơ chế tự nội suy của Implicit, cách điều khiển luồng của Explicit, cơ chế phân xử chạm trong Gesture Arena, và nguyên tắc chuyển động Non-blocking. Về thực hành, cần xây dựng một ứng dụng demo tích hợp đủ 3 phân hệ tương ứng và vượt qua toàn bộ kịch bản kiểm thử tự động với 0% rò rỉ bộ nhớ.  
+*(Chuyển slide)* Để đáp ứng được các yêu cầu trên, chúng ta cùng nhìn vào kiến trúc xử lý chuyển động bên dưới của Flutter.
 
 ---
 
 ### Slide 5: 3. Flutter Motion Architecture
-Kiến trúc 4 tầng: Ticker khóa xung VSync phần cứng màn hình, GPU chỉ cập nhật trực tiếp Transform Layer mà không rebuild lại cây Widget con.
+Kiến trúc chuyển động phân tách 4 tầng rõ ràng: Widget chỉ là bản khai báo giao diện; AnimationController và Tween tính toán giá trị nội suy; TickerProvider đóng vai trò đồng hồ khóa chặt nhịp xung VSync phần cứng màn hình ở 60Hz hoặc 120Hz; và quan trọng nhất, GPU chỉ việc cập nhật ma trận Transform Layer mà hoàn toàn không phải rebuild lại cây Widget con.  
+*(Chuyển slide)* Từ kiến trúc này, Flutter chia animation thành 2 trường phái lập trình chính.
 
 ---
 
 ### Slide 6: 4. Implicit vs Explicit Matrix
-Implicit là Declarative, tự quản lý vòng đời nên đạt Zero Memory Leak. Explicit là Imperative, cho phép lặp, đảo chiều và gắn cử chỉ kéo thả, nhưng buộc phải giải phóng thủ công.
+Implicit đại diện cho tư duy Declarative: ta chỉ khai báo giá trị đích, framework tự quản lý Controller và dọn dẹp bộ nhớ nên đạt 0% nguy cơ leak. Ngược lại, Explicit mang tư duy Imperative: cấp cho ta toàn quyền lặp vô hạn, đảo chiều và gắn kết theo tọa độ ngón tay kéo thả, nhưng đổi lại lập trình viên bắt buộc phải tự quản lý việc giải phóng tài nguyên.  
+*(Chuyển slide)* Việc quản lý tài nguyên trong Explicit diễn ra cụ thể như thế nào qua từng giai đoạn?
 
 ---
 
 ### Slide 7: 5. Explicit Lifecycle & Memory Safety
-`AnimationController` giữ tham chiếu mạnh tới `TickerProvider`. Quên gọi `controller.dispose()` sẽ khiến Engine Scheduler giữ rò rỉ bộ nhớ vĩnh viễn dù màn hình đã unmount.
+Vòng đời bắt đầu từ `initState` khi khởi tạo Controller và móc vào nhịp VSync qua `vsync: this`. Khi widget bị unmount, nếu ta quên gọi `controller.dispose()`, đối tượng TickerProvider vẫn bị lưu giữ trong Engine Scheduler qua một Strong Reference. Hậu quả là bộ gom rác Garbage Collector không thể giải phóng màn hình, gây tràn RAM sau một thời gian sử dụng.  
+*(Chuyển slide)* Bên cạnh chuyển động theo thời gian, một thành phần quan trọng khác là chuyển động gắn liền với cử chỉ người dùng.
 
 ---
 
 ### Slide 8: 6. Gesture Arena & Disambiguation
-Mọi cử chỉ chạm đều vào Đấu trường Arena. Chỉ cần ngón tay trượt quá ngưỡng 18dp, PanRecognizer lập tức thắng cuộc và hủy TapRecognizer để nhận toàn quyền cử chỉ.
+Mỗi khi có ngón tay chạm xuống, tất cả các bộ nhận diện cử chỉ đều tham gia vào Đấu trường Arena. Ban đầu chưa ai thắng; nhưng chỉ cần ngón tay di chuyển vượt ngưỡng Touch Slop 18dp, PanRecognizer sẽ lập tức tuyên bố thắng cuộc, loại bỏ hoàn toàn TapRecognizer để độc quyền kiểm soát cử chỉ kéo.  
+*(Chuyển slide)* Vậy khi đã kiểm soát được chuyển động và cử chỉ, ta cần tuân thủ các quy chuẩn thời gian nào để đạt UX tốt nhất?
 
 ---
 
 ### Slide 9: 7. UX Latency Thresholds
-Chuẩn thời gian M3: Phản hồi chạm phải dưới 100ms, chuyển cảnh 150 đến 350ms. Chuyển động trên 500ms sẽ gây cảm giác chậm chạp và ức chế.
+Theo nguyên lý Material Design 3: Phản hồi chạm phải tức thời dưới 100ms; chuyển cảnh tự nhiên phải nằm trong khoảng chuẩn vàng 150 đến 350ms; nếu chuyển động kéo dài trên 500ms, người dùng sẽ cảm thấy ứng dụng chậm chạp và giam cầm thao tác. Do đó, animation luôn phải interruptible để người dùng có thể đổi hướng bất cứ lúc nào.  
+*(Chuyển slide)* Sau đây là phần 2, nơi toàn bộ lý thuyết trên được hiện thực hóa vào mã nguồn thực tế.
 
 ---
 
 ### Slide 10: 8. Architecture & Motion Tokens
-Ứng dụng Demo xây dựng trên hệ thống MotionTokens chuẩn lưới 8dp, tách biệt 3 phân hệ chuyển động độc lập và đồng bộ nhịp VSync 60/120Hz.
+Ứng dụng demo được thiết kế chuẩn mực với hệ thống MotionTokens trên lưới 8dp để đảm bảo tính nhất quán toán học. Ứng dụng tích hợp 3 phân hệ độc lập: thẻ Implicit tự đổi kích thước, thẻ kéo thả Explicit kèm lò xo vật lý, và nút bấm bất đồng bộ không khóa luồng UI.  
+*(Chuyển slide)* Chúng ta sẽ quan sát phân hệ đầu tiên: Implicit Motion Card.
 
 ---
 
 ### Slide 11: 9. Implicit Motion: State Interpolation
-Với `AnimatedContainer`, chỉ cần thay đổi biến State; framework tự động nội suy mượt mà kích thước, màu nền và bo góc mà không cần Controller.
+Trên màn hình là 2 trạng thái thực tế của thẻ Implicit. Ở trạng thái nghỉ bên trái, thẻ có kích thước nhỏ gọn. Khi người dùng bấm nút, trạng thái mở rộng bên phải lập tức kích hoạt, toàn bộ màu nền, chiều cao và bán kính bo góc đều được tự động biến thiên mượt mà.  
+*(Chuyển slide)* Cơ chế kỹ thuật giúp thẻ đạt được sự mượt mà này nằm ở đâu?
 
 ---
 
 ### Slide 12: 9. Implicit Motion: Mechanics
-Cơ chế tự tính toán delta và cập nhật RenderObject bên dưới giúp code gọn nhất và triệt tiêu hoàn toàn nguy cơ rò rỉ bộ nhớ.
+Điểm mấu chốt là widget `AnimatedContainer` tự động lưu giữ giá trị cũ và so sánh với giá trị mới mỗi khi hàm `setState` được gọi. Nó tự tính toán delta và cập nhật trực tiếp xuống RenderObject qua từng frame. Nhờ không dùng Controller rời, mã nguồn vừa ngắn gọn vừa loại bỏ hoàn toàn khả năng phát sinh rò rỉ bộ nhớ.  
+*(Chuyển slide)* Tiếp theo, ta nâng cấp lên bài toán phức tạp hơn: chuyển động gắn liền với cử chỉ tay.
 
 ---
 
 ### Slide 13: 10. Explicit Gestures: Spring Physics
-Sử dụng `GestureDetector` đồng bộ tọa độ kéo 2D và góc nghiêng; khi buông tay, `SpringSimulation` lấy vận tốc vung tay để kéo thẻ nảy đàn hồi về gốc.
+Ở phân hệ này, thẻ bên trái nằm tại gốc tọa độ (0,0). Khi người dùng chạm và vuốt, thẻ bên phải dịch chuyển theo ngón tay đồng thời tự động tính toán góc xoay nghiêng tương ứng với độ dời 2D, tạo cảm giác thẻ có trọng lượng vật lý thực tế.  
+*(Chuyển slide)* Điều gì sẽ xảy ra khi người dùng buông tay ra giữa chừng?
 
 ---
 
 ### Slide 14: 10. Explicit Gestures: Mechanics
-Liên kết trực tiếp giữa sự kiện `onPanUpdate` với hàm mô phỏng vật lý trong `onPanEnd`, kết thúc an toàn bằng lệnh hủy trong `dispose()`.
+Tại thời điểm buông tay trong sự kiện `onPanEnd`, ta lấy vector vận tốc vuốt tay của người dùng để nạp vào hàm mô phỏng vật lý `SpringSimulation`. Thay vì chạy theo một đường cong cứng nhắc, thẻ sẽ tự nảy đàn hồi dao động về gốc tọa độ theo đúng quán tính lực tay, và toàn bộ controller được thu hồi an toàn trong `dispose()`.  
+*(Chuyển slide)* Để đảm bảo mã nguồn hoạt động chính xác và không có lỗi tiềm ẩn, toàn bộ app đã được đưa qua kiểm thử tự động.
 
 ---
 
 ### Slide 15: 11. Automated Test Suite
-Mã nguồn được kiểm thử tự động 5 kịch bản: render layout, biến thiên frame, bám tọa độ kéo thả, async không chặn UI, và xác minh giải phóng 100% Ticker.
+Mã nguồn được bảo vệ bởi 5 kịch bản kiểm thử widget tự động: kiểm tra render cấu trúc Material 3, kiểm tra các giá trị nội suy trung gian qua từng frame, xác thực tọa độ kéo 80px và nảy lò xo về gốc, kiểm tra nút bấm async chạy ngầm không làm đơ UI, và kiểm tra unmount màn hình để xác nhận không còn Ticker nào chạy ngầm.  
+*(Chuyển slide)* Tổng kết lại, làm thế nào để lập trình viên đưa ra quyết định kiến trúc chính xác giữa 2 trường phái này?
 
 ---
 
 ### Slide 16: 12. Decision Matrix
-Quy tắc lựa chọn: Luôn ưu tiên dùng Implicit làm mặc định để an toàn; chỉ dùng Explicit khi bài toán thực sự cần lặp vô hạn hoặc gắn với cử chỉ tay.
+Sơ đồ cây quyết định cho ta quy tắc nhất quán: Luôn bắt đầu với Implicit Animation làm mặc định cho các chuyển đổi giao diện dựa trên State vì tính an toàn tuyệt đối và chi phí bảo trì thấp. Chỉ nâng cấp lên Explicit khi bài toán thực sự đòi hỏi lặp vô hạn, đảo chiều giữa chừng, hoặc đồng bộ hóa trực tiếp với cử chỉ tay người dùng.  
+*(Chuyển slide)* Cuối cùng là các nguồn tài liệu kỹ thuật chuẩn mực được sử dụng trong bài báo cáo.
 
 ---
 
 ### Slide 17: 13. References
-Toàn bộ tài liệu tham khảo chính thức được đối chiếu trực tiếp từ trang tài liệu gốc của Flutter và Material Design 3. Em xin kết thúc phần báo cáo.
+Toàn bộ kiến trúc phân tầng, thông số thời gian phản hồi và các phương thức API đều được tham chiếu chuẩn xác từ tài liệu chính thức của Flutter Engine và tài liệu Material Design 3 Motion. Em xin kết thúc bài báo cáo và kính mời Thầy cùng các bạn đặt câu hỏi.
