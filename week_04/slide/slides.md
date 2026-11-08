@@ -1,8 +1,8 @@
 ---
 theme: default
 background: '#f8fafc'
-title: Animation & Cử Chỉ Nâng Cao
-info: Báo cáo Tuần 04 - Môn Lập trình Đa nền tảng
+title: Advanced Animations & Gestures in Flutter
+info: Topic 08 - Cross-Platform Development
 highlighter: shiki
 drawings:
   persist: false
@@ -10,11 +10,11 @@ transition: slide-left
 layout: cover
 ---
 
-# Animation & Cử Chỉ Nâng Cao
-Chủ đề 08: Báo cáo Tuần 04 — Môn: Lập trình Đa nền tảng
+# Advanced Animations & Gestures in Flutter
+Topic 08 — Cross-Platform Development
 
-**SVTH:** Huỳnh Thiện Lộc (MSSV: 106230052)  
-**GVHD:** TS. Nguyễn Duy Nhật Viễn
+**Student:** Huỳnh Thiện Lộc (106230052)  
+**Instructor:** TS. Nguyễn Duy Nhật Viễn
 
 <div class="pt-4 flex gap-2">
   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold">Flutter Motion</span>
@@ -23,79 +23,77 @@ Chủ đề 08: Báo cáo Tuần 04 — Môn: Lập trình Đa nền tảng
 </div>
 
 <!--
-Chào Thầy và các bạn. Hôm nay em xin báo cáo Chủ đề 08: Animation và Cử chỉ nâng cao trong Flutter.
+Báo cáo Chủ đề 08: Animation và Cử chỉ nâng cao trong Flutter.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Nội dung báo cáo
+# Agenda
 
-### Phần 1: Nền tảng Lý thuyết
+### Part 1: Core Mechanics
 1. Animation & UX Roles
-2. Requirements (Spec)
-3. Flutter Animation Architecture
+2. Technical Requirements
+3. Flutter Motion Architecture
 4. Implicit vs Explicit Matrix
 5. Explicit Lifecycle & Memory Safety
 6. Gesture Arena & Disambiguation
-7. UX Motion Principles & Latency
+7. UX Latency Thresholds
 
 ::right::
 
 <div class="pt-10">
 
-### Phần 2: Thực thi & Minh chứng
-8. Application Architecture
+### Part 2: Implementation & Evidence
+8. Architecture & Motion Tokens
 9. Implicit Motion: State Interpolation
-10. Explicit & Gestures: Spring Physics
-11. Automated Verification & Tests
-12. Engineering Decision Tree
-13. References & Verified Sources
+10. Explicit Gestures: Spring Physics
+11. Automated Test Suite
+12. Decision Matrix
+13. References
 
 </div>
 
 <!--
-Nội dung báo cáo gồm 2 phần lớn: Cơ chế cốt lõi (Kiến trúc Render, Lifecycle, Gesture Arena) và Ứng dụng demo thực tế kiểm thử 5/5 kịch bản.
+Nội dung báo cáo gồm 2 phần: Cơ chế cốt lõi và Ứng dụng demo thực tế kiểm thử 5/5 kịch bản.
 -->
 
 ---
 
 # 1. Animation & UX Roles
 
-Ba trụ cột nền tảng giải quyết bài toán trải nghiệm người dùng:
-
-| Trụ Cột | Trọng Tâm | Giá Trị Cốt Lõi |
+| Pillar | Focus | Core Value |
 | :--- | :--- | :--- |
-| **1. Spatial Continuity** | Tính liên tục không gian | Giúp não bộ kết nối nguồn gốc biến đổi, triệt tiêu giật cục thị giác |
-| **2. Focus Guidance** | Dẫn dắt sự chú ý | Hướng mắt người dùng đến vị trí dữ liệu mới vừa xuất hiện |
-| **3. Touch Feedback** | Phản hồi xúc giác (< 100ms) | Xác nhận thao tác chạm tức thì, chống việc bấm đúp do tưởng lag |
+| **Spatial Continuity** | State transitions | Eliminates cognitive friction and visual disorientation |
+| **Focus Guidance** | Attention direction | Guides the eye to mutated or newly rendered elements |
+| **Touch Feedback** | Sensory confirmation (< 100ms) | Confirms input instantly, prevents duplicate taps |
 
 <!--
-Animation không phải để trang trí. Nó giải quyết 3 bài toán UX lớn: Tính liên tục không gian, Dẫn hướng mắt, và Phản hồi tức thì dưới 100ms.
+Animation giải quyết 3 bài toán UX lớn: Tính liên tục không gian, Dẫn hướng mắt, và Phản hồi tức thì dưới 100ms.
 -->
 
 ---
 layout: two-cols
 ---
 
-# 2. Requirements (Spec)
+# 2. Technical Requirements
 
-### 1. Theoretical Foundation
-- **Implicit Animation:** Tự động nội suy Declarative.
-- **Explicit Animation:** Điều khiển bằng `AnimationController`.
-- **Gesture Arena:** Phân giải xung đột cử chỉ chạm.
-- **Non-blocking UX:** Không khóa luồng tương tác.
+### Theoretical Foundations
+- **Implicit Animations:** Declarative target interpolation.
+- **Explicit Animations:** Imperative `AnimationController`.
+- **Gesture Arena:** Touch conflict disambiguation.
+- **Non-blocking UX:** Unconstrained touch pipeline.
 
 ::right::
 
 <div class="pt-10">
 
-### 2. Practice & Demo App
-- **Implicit Card:** Biến đổi size, color, radius.
-- **Draggable Spring Card:** Pan 2D + lực kéo lò xo.
-- **Morphing Button:** Async animation mượt mà.
-- **Automated Tests:** 5/5 test pass, 0 memory leak.
+### Practical Deliverables
+- **Implicit Card:** Shape, color, and size transitions.
+- **Draggable Spring Card:** 2D pan + spring physics.
+- **Morphing Button:** Non-blocking async feedback.
+- **Automated Verification:** 5/5 test pass, 0 leaks.
 
 </div>
 
@@ -105,49 +103,50 @@ layout: two-cols
 
 ---
 
-# 3. Flutter Animation Architecture
+# 3. Flutter Motion Architecture
 
-Kiến trúc 4 tầng phân tách trách nhiệm rõ ràng:
-
-1. **Tầng Widgets (Khai báo):** `AnimatedContainer` (Implicit) hoặc `SlideTransition` (Explicit).
-2. **Tầng Điều khiển & Nội suy:** `AnimationController` (0.0 → 1.0) kết hợp `Tween<T>` và `CurvedAnimation`.
-3. **Tầng Làm tươi đồng bộ:** `Ticker` & `TickerProvider` khóa xung VSync hệ điều hành (60Hz / 120Hz).
-4. **Tầng Phần cứng (GPU Render):** Cập nhật trực tiếp Transform Layer mà **không cần rebuild cây Widget**.
+```text
+[ Widgets Layer ]      Declarative widgets (AnimatedContainer, SlideTransition)
+       ↓
+[ Animation Layer ]    AnimationController, Tween<T>, CurvedAnimation
+       ↓
+[ Engine Scheduler ]   Ticker locks to OS hardware VSync (60Hz / 120Hz)
+       ↓
+[ GPU Rendering ]      Transform Layer mutations (bypasses widget subtree rebuilds)
+```
 
 <!--
-Kiến trúc phân tầng Flutter: Widget chỉ là bản khai báo. Ticker bắt nhịp VSync từ hệ điều hành, và GPU chỉ việc cập nhật Layer biến hình mà không phải rebuild lại cây widget.
+Kiến trúc phân tầng Flutter: Widget chỉ là bản khai báo. Ticker bắt nhịp VSync từ hệ điều hành, GPU chỉ cập nhật Layer biến hình mà không rebuild widget con.
 -->
 
 ---
 
 # 4. Implicit vs Explicit Matrix
 
-| Tiêu Chí So Sánh | Implicit Animation | Explicit Animation |
+| Dimension | Implicit Animations | Explicit Animations |
 | :--- | :--- | :--- |
-| **Tư duy lập trình** | Declarative (Khai báo đích đến) | Imperative (Điều khiển luồng thời gian) |
-| **Quản lý Controller** | **Tự động** (Được đóng gói trong State) | **Thủ công** (`AnimationController`) |
-| **Rủi ro Memory Leak** | **0% (Zero Leak)** | **Cao** (Nếu quên `dispose()`) |
-| **Lặp lại / Đảo chiều** | Không hỗ trợ | Hỗ trợ đầy đủ (`repeat`, `reverse`) |
-| **Gắn kết cử chỉ Pan** | Không khả thi | Đồng bộ mượt mà theo tọa độ ngón tay |
+| **Programming Model** | Declarative | Imperative |
+| **Controller Management** | Managed internally by Framework | Manual `AnimationController` |
+| **Memory Leak Risk** | **0% (Zero Leak)** | **High** (If unreleased in `dispose()`) |
+| **Repeat / Reverse** | Not supported | Full control (`repeat()`, `reverse()`) |
+| **Gesture Binding** | Incompatible | Direct pan coordinate sync |
 
 <!--
-Ma trận so sánh: Implicit cực kỳ an toàn vì không thể rò rỉ bộ nhớ, nhưng khi cần lặp vô hạn hoặc gắn với cử chỉ tay thì bắt buộc phải dùng Explicit.
+Implicit cực kỳ an toàn vì không thể rò rỉ bộ nhớ, nhưng khi cần lặp vô hạn hoặc gắn với cử chỉ tay thì bắt buộc phải dùng Explicit.
 -->
 
 ---
 
 # 5. Explicit Lifecycle & Memory Safety
 
-Quy trình quản lý vòng đời chặt chẽ chống rò rỉ bộ nhớ:
-
 ```text
-[1. initState] --------> [2. Ticker Hook] --------> [3. Running Frame] --------> [4. dispose]
-Tạo Controller           Đăng ký nhịp VSync          Nội suy giá trị             HỦY TICKER
-vsync: this              vào Engine Scheduler        (0.0 -> 1.0)                CHỐNG MEMORY LEAK
+[initState()] ───────> [Ticker Hook] ───────> [Active Frames] ───────> [dispose()]
+Initialize             Subscribe to           Frame-by-frame          Cancel Ticker &
+AnimationController    VSync cadence          interpolation           release resources
 ```
 
-> **Cảnh báo bẫy Giảng viên:**  
-> Nếu quên gọi `controller.dispose()`, đối tượng `TickerProvider` sẽ bị giữ lại trong Engine Scheduler qua **Strong Reference**, khiến Garbage Collector không thể giải phóng màn hình dù widget đã bị unmount.
+> **Memory Leak Hazard:**  
+> Omitting `controller.dispose()` retains `TickerProvider` in the Engine Scheduler via a **Strong Reference**, preventing the Garbage Collector from freeing the unmounted route.
 
 <!--
 Vòng đời bắt đầu từ initState và kết thúc bắt buộc tại dispose. Quên dispose sẽ tạo Strong Reference khiến Garbage Collector không thể giải phóng màn hình.
@@ -157,16 +156,14 @@ Vòng đời bắt đầu từ initState và kết thúc bắt buộc tại disp
 
 # 6. Gesture Arena & Disambiguation
 
-Quy trình giải quyết tranh chấp cử chỉ chạm:
-
 ```text
-PointerDown  --->  PointerMove (> 18dp slop)  --->  Arena Sweep  --->  PointerUp
-Ghi danh           PanRecognizer tuyên bố          Hủy bỏ              SpringSimulation
-mọi Recognizer     CHIẾN THẮNG                     TapRecognizer       kéo nảy về gốc (0,0)
+PointerDown  ───────>  PointerMove (> 18dp)  ───────>  Arena Sweep  ───────>  PointerUp
+Register all           PanRecognizer claims            Cancel Tap              Trigger Spring
+recognizers            VICTORY                         recognizer              recoil simulation
 ```
 
-- **Tọa độ Pan 2D:** Biến đổi độ lệch vị trí và tính toán góc nghiêng tự nhiên.
-- **SpringSimulation:** Mô phỏng vật lý hồi phục đàn hồi theo vận tốc vung tay của người dùng.
+- **2D Pan Tracking:** Real-time translation with dynamic tilt angle calculations.
+- **SpringSimulation:** Natural damped harmonic recoil driven by release velocity.
 
 <!--
 Gesture Arena giải quyết xung đột: khi di chuyển vượt ngưỡng slop (18dp), PanRecognizer sẽ loại bỏ TapRecognizer để nhận toàn quyền cử chỉ.
@@ -174,18 +171,15 @@ Gesture Arena giải quyết xung đột: khi di chuyển vượt ngưỡng slop
 
 ---
 
-# 7. UX Motion Principles & Latency
+# 7. UX Latency Thresholds
 
-Quy chuẩn thời gian theo tâm lý học nhận thức (Material Design 3):
-
-| Ngưỡng Thời Gian | Phân Loại Cảm Nhận | Ứng Dụng Thực Tế |
+| Latency | Classification | Practical Application |
 | :--- | :--- | :--- |
-| **< 100 ms** | Phản hồi tức thời (Instant) | Phản hồi chạm ngón tay (Touch Ripple, Pressed state) |
-| **150 – 350 ms** | Chuyển cảnh chuẩn vàng (Natural) | Mở rộng thẻ, điều hướng màn hình, trượt menu |
-| **> 500 ms** | Ngưỡng gây khó chịu (Sluggish) | Gây cảm giác chậm chạp, lề mề cho ứng dụng |
+| **< 100 ms** | Instant | Touch ripple, physical pressed states |
+| **150 – 350 ms** | Natural (Gold Standard) | Navigation, element expansion, modal transitions |
+| **> 500 ms** | Sluggish | Perceived as system lag; causes user friction |
 
-- **Non-Blocking UX:** Không khóa luồng cảm ứng khi hiệu ứng đang chạy.
-- **Interruptible:** Cho phép người dùng ngắt chuyển động hoặc kéo đổi hướng tức thì.
+- **Non-Blocking UX:** Keep animations interruptible; never freeze user gestures.
 
 <!--
 Về mặt tâm lý học thời gian: Phản hồi chạm phải dưới 100ms, chuyển cảnh 150-350ms. Trên 500ms người dùng sẽ bắt đầu thấy khó chịu và bực bội.
@@ -195,18 +189,18 @@ Về mặt tâm lý học thời gian: Phản hồi chạm phải dưới 100ms,
 layout: two-cols
 ---
 
-# 8. Application Architecture
+# 8. Architecture & Motion Tokens
 
-Kiến trúc Demo App (`week_04/app`):
+Demo App Structure (`week_04/app`):
 
-- **MotionTokens (Lưới 8dp):**  
+- **MotionTokens (8dp Grid):**  
   `space8`, `space16`, `space24`.
-- **3 Phân hệ chuyển động độc lập:**
-  1. `ImplicitMotionCard`: Tự nội suy Declarative.
-  2. `DragSpringCard`: Gesture Arena + Lò xo.
-  3. `MorphingActionButton`: Async không chặn UI.
-- **Đồng bộ VSync:**  
-  Tự động phát nhịp 60Hz / 120Hz.
+- **Three Independent Subsystems:**
+  1. `ImplicitMotionCard`: Declarative interpolation.
+  2. `DragSpringCard`: Gesture Arena + Spring physics.
+  3. `MorphingActionButton`: Non-blocking async feedback.
+- **VSync Synchronization:**  
+  Locked to 60Hz / 120Hz display refresh.
 
 ::right::
 
@@ -224,21 +218,21 @@ layout: two-cols
 
 # 9. Implicit Motion: State Interpolation
 
-### 1. Trạng thái At Rest
+### Rest State
 <img src="/images/comp_implicit_rest.png" class="max-h-[220px] rounded border shadow-sm" />
 
 ::right::
 
-### 2. Trạng thái Interpolated
+### Expanded State
 <img src="/images/comp_implicit_expanded.png" class="max-h-[220px] rounded border shadow-sm" />
 
 ---
 
-# 9. Implicit Motion (Chi tiết cơ chế)
+# 9. Implicit Motion: Mechanics
 
-- **AnimatedContainer:** Tự động so sánh giá trị cũ và mới của thuộc tính (`width`, `height`, `decoration`).
-- **Nội suy mượt mà:** Tính toán giá trị trung gian qua từng khung hình mà không cần viết `AnimationController`.
-- **Zero Memory Leak:** Vòng đời bộ nhớ được Flutter framework quản lý 100% tự động.
+- **AnimatedContainer:** Interpolates property deltas across duration and curve.
+- **Automatic State Sync:** Recomputes layout without external controllers.
+- **Zero Resource Leaks:** Framework guarantees lifecycle teardown.
 
 <!--
 Khi bấm nút, AnimatedContainer tự so sánh kích thước cũ và mới rồi nội suy mượt mà qua từng frame. Hoàn toàn không phát sinh rò rỉ bộ nhớ.
@@ -248,23 +242,23 @@ Khi bấm nút, AnimatedContainer tự so sánh kích thước cũ và mới r�
 layout: two-cols
 ---
 
-# 10. Explicit & Gestures: Spring Physics
+# 10. Explicit Gestures: Spring Physics
 
-### 1. Trạng thái tại Gốc (0, 0)
+### Rest State (Offset 0, 0)
 <img src="/images/comp_drag_rest.png" class="max-h-[220px] rounded border shadow-sm" />
 
 ::right::
 
-### 2. Đang Kéo & Xoay Quán Tính
+### Pan & Dynamic Tilt
 <img src="/images/comp_drag_active.png" class="max-h-[220px] rounded border shadow-sm" />
 
 ---
 
-# 10. Explicit & Gestures (Chi tiết cơ chế)
+# 10. Explicit Gestures: Mechanics
 
-- **GestureDetector:** Bắt trọn tọa độ kéo 2D `onPanUpdate` để xoay góc thẻ theo độ dời ngón tay.
-- **SpringSimulation:** Khi buông tay (`onPanEnd`), khởi chạy hàm vật lý lò xo đưa thẻ nảy đàn hồi về gốc `(0, 0)` theo đúng quán tính vung tay.
-- **Explicit Lifecycle:** Buộc phải giải phóng qua `controller.dispose()` để tránh rò rỉ bộ nhớ Ticker.
+- **GestureDetector (`onPanUpdate`):** Synchronizes card translation and rotational tilt with pointer coordinates.
+- **SpringSimulation (`onPanEnd`):** Runs physical recoil back to `(0, 0)` preserving release inertia.
+- **Resource Teardown:** Explicit disposal in `State.dispose()`.
 
 <!--
 Sử dụng GestureDetector kết hợp SpringSimulation. Góc nghiêng tự tính theo độ dời pan. Buông tay ra là thẻ tự nảy đàn hồi về gốc theo đúng vận tốc tay người dùng.
@@ -272,19 +266,19 @@ Sử dụng GestureDetector kết hợp SpringSimulation. Góc nghiêng tự tí
 
 ---
 
-# 11. Automated Verification & Tests
+# 11. Automated Test Suite
 
-Hệ thống kiểm thử tự động 5/5 kịch bản (Passed 100% ~ 2.5s):
+5/5 Test Specifications Passed (100% ~ 2.5s):
 
-1. **Launch M3:** Khởi chạy thành công giao diện và render đầy đủ 3 phân hệ.
-2. **Implicit Interpolation:** Kích hoạt mở rộng thẻ, kiểm tra biến thiên từng khung hình.
-3. **Gesture Drag & Recoil:** Vuốt dời 80px, kiểm tra trạng thái Dragging và nảy về gốc (0,0).
-4. **Non-Blocking Async:** Nút Morphing Button chạy tác vụ ngầm mà không khóa UI pipeline.
-5. **Memory Leak Teardown:** Unmount widget, xác nhận thu hồi 100% Ticker tài nguyên.
+1. **Launch & Layout:** Validates Material 3 rendering of all three modules.
+2. **Implicit Motion:** Tests smooth interpolation across intermediate frames.
+3. **Gesture Drag & Recoil:** Tests 80px drag displacement and spring return.
+4. **Non-Blocking Async:** Verifies UI pipeline responsiveness during simulated network work.
+5. **Memory Leak Teardown:** Confirms zero lingering tickers after widget destruction.
 
 ```text
-✓ flutter test: All tests passed! (5/5 passed)
-✓ dart analyze: No issues found!
+flutter test: All tests passed! (5/5)
+dart analyze: No issues found!
 ```
 
 <!--
@@ -295,33 +289,31 @@ Toàn bộ mã nguồn đã được kiểm thử tự động 5/5 kịch bản,
 layout: two-cols
 ---
 
-# 12. Engineering Decision Tree
+# 12. Decision Matrix
 
-### Implicit Animation (Mặc định)
-- Chỉ cần đổi giao diện khi State thay đổi.
-- Chuyển động 1 chiều từ trạng thái A → B.
-- **Ưu điểm:** Zero Memory Leak, viết code nhanh, bảo trì đơn giản nhất.
+### Implicit Animations (Default)
+- State-driven styling changes.
+- Unidirectional transitions (A → B).
+- **Benefits:** Zero memory leaks, minimal boilerplate, low maintenance.
 
 ::right::
 
 <div class="pt-10">
 
-### Explicit Animation (Nâng cao)
-- Cần lặp vô hạn hoặc đảo chiều giữa chừng.
-- Gắn kết trực tiếp với cử chỉ tay người dùng.
-- **Lưu ý:** Bắt buộc quản lý vòng đời `dispose()` nghiêm ngặt.
+### Explicit Animations (Advanced)
+- Repeating, looping, or reversible sequences.
+- Direct gesture synchronization (Pan / Drag).
+- **Requirement:** Rigorous `dispose()` lifecycle management.
 
 </div>
 
 <!--
-Cây quyết định: Hãy luôn chọn Implicit làm mặc định để an toàn và tiết kiệm chi phí bảo trì. Chỉ dùng Explicit khi thực sự cần kiểm soát hướng chuyển động và cử chỉ phức tạp.
+Cây quyết định: Luôn chọn Implicit làm mặc định. Chỉ dùng Explicit khi thực sự cần kiểm soát hướng chuyển động và cử chỉ phức tạp.
 -->
 
 ---
 
-# 13. References & Verified Sources
-
-Tất cả tài liệu tham khảo chính thức (Đã xác minh kết nối HTTP 200 OK):
+# 13. References
 
 - **Flutter Animations Overview:** [docs.flutter.dev/ui/animations/overview](https://docs.flutter.dev/ui/animations/overview)
 - **Implicit Animations Guide:** [docs.flutter.dev/ui/animations/implicit-animations](https://docs.flutter.dev/ui/animations/implicit-animations)
@@ -331,5 +323,5 @@ Tất cả tài liệu tham khảo chính thức (Đã xác minh kết nối HTT
 - **Material Design 3 Motion:** [m3.material.io/styles/motion/overview/how-it-works](https://m3.material.io/styles/motion/overview/how-it-works)
 
 <!--
-Toàn bộ tài liệu tham khảo chính thức đều được kiểm tra mở và hoạt động bình thường. Em xin cảm ơn Thầy và các bạn đã theo dõi bài báo cáo.
+Em xin kết thúc bài báo cáo. Cảm ơn Thầy và các bạn đã theo dõi.
 -->
