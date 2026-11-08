@@ -128,3 +128,32 @@ Animation trong giao diện hiện đại **không phải là món đồ trang t
    - Quá $500\text{ms}$: Người dùng bắt đầu cảm thấy giao diện bị "chậm chạp", "lề mề", gây ức chế.
 4. **Tôn trọng cài đặt trợ năng (Reduced Motion):**
    - Đọc giá trị `MediaQuery.of(context).disableAnimations` để tự động tắt hoặc rút ngắn thời gian animation đối với người dùng bị hội chứng tiền đình hoặc say tàu xe do thị giác (Vestibular disorders).
+
+---
+
+## 5. Danh Mục Nguồn Tham Khảo Chính Thức (Verified References)
+
+Toàn bộ lý thuyết, kiến trúc và nguyên tắc UX trong tài liệu và slide đều được trích xuất từ các tài liệu kỹ thuật chính thức, đã kiểm tra kết nối trực tiếp (HTTP 200 OK):
+
+1. **Flutter Animations Overview & Core Architecture**:
+   - Link: https://docs.flutter.dev/ui/animations/overview
+   - Trọng tâm: Mô hình phân lớp, `Animation<T>`, `Listenable`, `Tween`, và phân biệt Implicit vs Explicit.
+2. **Flutter Implicit Animations Guide**:
+   - Link: https://docs.flutter.dev/ui/animations/implicit-animations
+   - Trọng tâm: Khởi tạo khai báo, `AnimatedContainer`, nội suy thuộc tính tự động không cần Controller.
+3. **Flutter Gestures & Touch Disambiguation (Gesture Arena)**:
+   - Link: https://docs.flutter.dev/ui/interactivity/gestures
+   - Trọng tâm: Hit-testing, `PointerDown`, đấu trường nhận diện cử chỉ và xử lý tranh chấp `GestureArenaManager`.
+4. **API Reference: `AnimationController` & Resource Management**:
+   - Link: https://api.flutter.dev/flutter/animation/AnimationController-class.html
+   - Trọng tâm: Vòng đời `AnimationController`, cơ chế `vsync` từ `TickerProvider`, và phương thức bắt buộc `dispose()`.
+5. **API Reference: `AnimatedContainer`**:
+   - Link: https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html
+   - Trọng tâm: Cấu hình `duration`, `curve`, và danh sách các thuộc tính tự động nội suy.
+6. **API Reference: `GestureArenaManager`**:
+   - Link: https://api.flutter.dev/flutter/gestures/GestureArenaManager-class.html
+   - Trọng tâm: Các trạng thái `hold`, `release`, `resolve` và giải thuật xác định Winner trong đấu trường cử chỉ.
+7. **Google Material Design 3 Motion Principles**:
+   - Link: https://m3.material.io/styles/motion/overview/how-it-works
+   - Trọng tâm: Các nguyên tắc chuyển động Responsive, Natural, Intentional và thang thời lượng chuẩn cho tương tác di động.
+

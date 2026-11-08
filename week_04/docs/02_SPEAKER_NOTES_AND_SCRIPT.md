@@ -99,11 +99,12 @@ Tài liệu này được thiết kế chuyên biệt để hỗ trợ thuyết 
 
 ---
 
-### Slide 13: Tổng Kết & Cây Quyết Định Kỹ Thuật (Decision Tree)
-- **Hình ảnh trình chiếu**: Cây quyết định:
-  - Cần lặp lại / đảo chiều / cử chỉ phức tạp? $\to$ **Explicit Animation** (Cần quản lý `dispose()`).
-  - Chỉ đổi giao diện khi state thay đổi? $\to$ **Implicit Animation** (Nhanh, an toàn tuyệt đối).
+### Slide 14: References & Verified Sources
+- **Hình ảnh trình chiếu**: Danh sách các liên kết chính thức từ Flutter & Material Design kèm mã phản hồi HTTP 200 đã kiểm chứng.
 - **Lời nói (What to say)**:
-  > *"Tóm lại, không có giải pháp nào vượt trội trong mọi hoàn cảnh. Kỹ sư giỏi là người biết chọn đúng công cụ:*
-  > *- Hãy dùng **Implicit Animation** làm lựa chọn mặc định để tiết kiệm chi phí bảo trì và triệt tiêu nguy cơ rò rỉ bộ nhớ.*
-  > *- Chỉ chuyển sang **Explicit Animation** khi bạn thực sự cần điều khiển hướng chuyển động, lặp vô hạn, hoặc gắn kết trực tiếp với vector cử chỉ của người dùng."*
+  > *"Toàn bộ nội dung lý thuyết, phân tích cơ chế vòng đời và nguyên tắc UX trong bài báo cáo đều được tổng hợp và đối chiếu trực tiếp từ các tài liệu chính thức của Flutter và Google Material Design:*
+  > *1. Trang tài liệu tổng quan Flutter Animations và Implicit Animations trên docs.flutter.dev.*
+  > *2. Tài liệu kỹ thuật về cử chỉ và Đấu trường nhận diện Gesture Arena trên docs.flutter.dev/ui/interactivity/gestures.*
+  > *3. Bộ API Reference chính thức của AnimationController, AnimatedContainer, và GestureArenaManager trên api.flutter.dev.*
+  > *4. Quy chuẩn chuyển động giao diện người dùng Material Motion Specs trên m3.material.io.*
+  > *Mọi đường link đều là nguồn mở, có thể truy cập và tra cứu trực tiếp bất cứ lúc nào. Em xin chân thành cảm ơn Thầy và các bạn đã chú ý lắng nghe."*
