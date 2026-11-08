@@ -1,4 +1,5 @@
 #import "@preview/typslides:1.3.4": *
+#import "@preview/diagraph:0.3.3": *
 
 // =============================================================
 // CẤU HÌNH GIAO DIỆN (16:9, TỐI GIẢN CHỮ, TỐI ĐA SƠ ĐỒ TRỰC QUAN)
@@ -24,6 +25,27 @@
   inset: (x: 4pt, y: 1pt),
   radius: 3pt,
 )
+
+// =============================================================
+// COMPONENT DIAGRAM DÙNG CHUNG (TỰ ĐỘNG BỐ TRÍ, ĐỒNG BỘ THEME)
+// =============================================================
+#let flow-diagram(dot-body, dir: "LR", width: 85%) = align(center)[
+  #raw-render(
+    raw(
+      "digraph G {
+        rankdir=" + dir + ";
+        bgcolor=\"transparent\";
+        nodesep=0.22;
+        ranksep=0.32;
+        node [shape=box, style=\"filled,rounded\", fontname=\"Arial\", fontsize=11, margin=\"0.16,0.08\", fillcolor=\"#ebf8ff\", color=\"#3182ce\", penwidth=1.4];
+        edge [color=\"#4a5568\", penwidth=1.4, fontname=\"Arial\", fontsize=10];
+        " + dot-body + "
+      }",
+      lang: "dot",
+    ),
+    width: width,
+  )
+]
 
 // =============================================================
 // 1. TRANG BÌA
@@ -117,24 +139,68 @@
 // =============================================================
 #slide(title: "Flutter Animation Architecture", outlined: true)[
   #v(0.05em)
-  #align(center)[
-    #image("diagrams/animation_architecture.svg", height: 75%)
-  ]
+  #flow-diagram(dir: "TB", width: 72%, "
+    subgraph cluster_widgets {
+      label=\"TẦNG WIDGETS (KHỞI TẠO)\";
+      fontname=\"Arial\"; fontsize=11; color=\"#2b6cb0\"; style=\"filled,rounded\"; fillcolor=\"#ebf8ff\";
+      w_imp [label=\"Implicit Widgets\\n(AnimatedContainer, Opacity)\", fillcolor=\"#bee3f8\", color=\"#2b6cb0\"];
+      w_exp [label=\"Explicit Widgets\\n(Transition Widgets, AnimatedBuilder)\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
+    }
+    subgraph cluster_engine {
+      label=\"TẦNG ĐIỀU KHIỂN & NỘI SUY\";
+      fontname=\"Arial\"; fontsize=11; color=\"#2f855a\"; style=\"filled,rounded\"; fillcolor=\"#f0fff4\";
+      c_ctrl [label=\"AnimationController\\n(Quản lý tiến trình & thời lượng)\", fillcolor=\"#ffffff\", color=\"#38a169\"];
+      c_tween [label=\"Tween<T> & Curves\\n(Ánh xạ 0.0 -> 1.0 sang giá trị thực)\", fillcolor=\"#ffffff\", color=\"#38a169\"];
+    }
+    subgraph cluster_hardware {
+      label=\"TẦNG PHẦN CỨNG & RENDER LAYER\";
+      fontname=\"Arial\"; fontsize=11; color=\"#805ad5\"; style=\"filled,rounded\"; fillcolor=\"#faf5ff\";
+      h_ticker [label=\"Ticker & Vsync\\n(Đồng bộ xung nhịp GPU 60/120Hz)\", fillcolor=\"#e9d8fd\", color=\"#805ad5\"];
+      h_gpu [label=\"GPU Render Pipeline\\n(Chỉ vẽ Transform Layer, không rebuild Widget)\", fillcolor=\"#ffffff\", color=\"#805ad5\"];
+    }
+    w_imp -> c_tween [label=\"Tự quản lý\"];
+    w_exp -> c_ctrl [label=\"Điều khiển trực tiếp\"];
+    c_ctrl -> c_tween;
+    c_ctrl -> h_ticker [label=\"vsync: this\"];
+    c_tween -> h_gpu;
+  ")
 ]
 
 #slide(title: "Implicit vs Explicit Matrix", outlined: true)[
   #v(0.1em)
-  #align(center)[
-    #image("diagrams/implicit_explicit_matrix.svg", width: 92%)
-  ]
+  #flow-diagram(dir: "LR", width: 90%, "
+    subgraph cluster_imp {
+      label=\"IMPLICIT (DECLARATIVE)\";
+      fontname=\"Arial\"; fontsize=12; color=\"#2b6cb0\"; style=\"filled,rounded\"; fillcolor=\"#ebf8ff\";
+      i1 [label=\"Chỉ cần truyền Target Value & Duration\", fillcolor=\"#ffffff\", color=\"#3182ce\"];
+      i2 [label=\"Framework tự quản lý Controller ngầm\", fillcolor=\"#ffffff\", color=\"#3182ce\"];
+      i3 [label=\"ZERO Memory Leak (Tự giải phóng 100%)\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
+      i1 -> i2 -> i3;
+    }
+    subgraph cluster_exp {
+      label=\"EXPLICIT (IMPERATIVE)\";
+      fontname=\"Arial\"; fontsize=12; color=\"#e53e3e\"; style=\"filled,rounded\"; fillcolor=\"#fff5f5\";
+      e1 [label=\"Khởi tạo thủ công AnimationController\", fillcolor=\"#ffffff\", color=\"#e53e3e\"];
+      e2 [label=\"Toàn quyền: forward, reverse, repeat, spring\", fillcolor=\"#ffffff\", color=\"#e53e3e\"];
+      e3 [label=\"BẮT BUỘC dispose() trước super.dispose()\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
+      e1 -> e2 -> e3;
+    }
+  ")
 ]
 
 #slide(title: "Explicit Lifecycle & Memory Safety", outlined: true)[
   #v(0.1em)
-  #align(center)[
-    #image("diagrams/controller_lifecycle.svg", width: 90%)
-  ]
-  #v(0.2em)
+  #flow-diagram(dir: "LR", width: 90%, "
+    state [label=\"State Object\\nwith SingleTickerProvider\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
+    ticker [label=\"Ticker Instance\\n(Vsync Listener)\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
+    controller [label=\"AnimationController\\n(Active Ref)\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
+    safe_dispose [label=\"1. controller.dispose()\\n2. super.dispose()\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
+
+    state -> ticker [label=\"createTicker()\"];
+    ticker -> controller [label=\"Strong Ref\"];
+    controller -> safe_dispose [label=\"Ngắt kết nối\"];
+  ")
+  #v(0.15em)
   #align(center)[
     #rect(stroke: 1pt + rgb("#e53e3e"), fill: rgb("#fff5f5"), inset: 8pt, radius: 6pt)[
       #text(size: 12.5pt, fill: rgb("#c53030"))[
@@ -146,16 +212,28 @@
 
 #slide(title: "Gesture Arena & Disambiguation", outlined: true)[
   #v(0.1em)
-  #align(center)[
-    #image("diagrams/gesture_arena.svg", width: 90%)
-  ]
+  #flow-diagram(dir: "LR", width: 90%, "
+    pointer [label=\"PointerDown\\n(Hit-testing)\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
+    arena [label=\"Gesture Arena\\n(Tap, Horizontal, Vertical)\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
+    slop [label=\"Touch Slop (> 18dp)\\nTrajectory Check\", fillcolor=\"#faf5ff\", color=\"#805ad5\"];
+    win [label=\"1. Self-elimination\\n2. Declare Winner\\n3. Last-Man-Standing\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
+
+    pointer -> arena [label=\"Register\"];
+    arena -> slop [label=\"Finger moves\"];
+    slop -> win [label=\"Disambiguation\"];
+  ")
 ]
 
 #slide(title: "UX Motion Principles & Latency", outlined: true)[
   #v(0.1em)
-  #align(center)[
-    #image("diagrams/ux_motion_timeline.svg", width: 88%)
-  ]
+  #flow-diagram(dir: "LR", width: 88%, "
+    t1 [label=\"< 100ms\\nPhản hồi xúc giác\\n(Instant Touch Feedback)\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
+    t2 [label=\"150ms - 350ms\\nChuyển cảnh tối ưu\\n(Smooth Transition)\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
+    t3 [label=\"> 500ms\\nNgưỡng gây ức chế\\n(Perceived Delay)\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
+
+    t1 -> t2 [label=\"Natural Easing\"];
+    t2 -> t3 [label=\"Tránh dùng\"];
+  ")
   #v(0.1em)
   #grid(
     columns: (1fr, 1fr),
@@ -260,9 +338,16 @@
 
 #slide(title: "Engineering Decision Tree", outlined: true)[
   #v(0.05em)
-  #align(center)[
-    #image("diagrams/decision_tree.svg", height: 75%)
-  ]
+  #flow-diagram(dir: "TB", width: 62%, "
+    q1 [label=\"Nhu cầu tạo chuyển động?\", fillcolor=\"#ebf8ff\", color=\"#3182ce\"];
+    q2 [label=\"Có cần lặp / đảo chiều /\\ngắn kết cử chỉ kéo thả?\", fillcolor=\"#feebc8\", color=\"#dd6b20\"];
+    ans_imp [label=\"CHỌN IMPLICIT ANIMATION\\n- AnimatedContainer\\n- Zero Memory Leak, cực nhanh\", fillcolor=\"#c6f6d5\", color=\"#38a169\"];
+    ans_exp [label=\"CHỌN EXPLICIT ANIMATION\\n- AnimationController + Ticker\\n- Bắt buộc quản lý dispose()\", fillcolor=\"#fed7d7\", color=\"#e53e3e\"];
+
+    q1 -> q2;
+    q2 -> ans_imp [label=\"Không\"];
+    q2 -> ans_exp [label=\"Có\"];
+  ")
 ]
 
 // =============================================================
