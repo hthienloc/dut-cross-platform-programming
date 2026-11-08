@@ -205,15 +205,17 @@ Demo App Structure (`week_04/app`):
 
 <div class="grid grid-cols-2 gap-6 pt-4 text-center">
   <div class="flex flex-col items-center">
-    <div class="text-sm font-semibold text-slate-700 mb-2">Motion Animation (GIF)</div>
-    <img src="/images/implicit_motion.gif" class="max-h-[260px] rounded border shadow-sm" />
+    <div class="text-sm font-semibold text-slate-700 mb-2">Rest State (At Rest)</div>
+    <img src="/images/comp_implicit_rest.png" class="max-h-[260px] rounded border shadow-sm" />
   </div>
   <div class="flex flex-col items-center">
-    <div class="text-sm font-semibold text-slate-700 mb-2">Target Expanded State</div>
+    <div class="text-sm font-semibold text-slate-700 mb-2">Expanded State (Interpolated)</div>
     <img src="/images/comp_implicit_expanded.png" class="max-h-[260px] rounded border shadow-sm" />
   </div>
 </div>
 
+---
+layout: two-cols
 ---
 
 # 9. Implicit Motion: Mechanics
@@ -221,6 +223,12 @@ Demo App Structure (`week_04/app`):
 - **AnimatedContainer:** Interpolates property deltas across duration and curve.
 - **Automatic State Sync:** Recomputes layout without external controllers.
 - **Zero Resource Leaks:** Framework guarantees lifecycle teardown.
+
+::right::
+
+<div class="flex justify-center pt-2">
+  <img src="/images/comp_implicit_moving.png" class="max-h-[250px] rounded border shadow-sm" />
+</div>
 
 <!--
 Khi bấm nút, AnimatedContainer tự so sánh kích thước cũ và mới rồi nội suy mượt mà qua từng frame. Hoàn toàn không phát sinh rò rỉ bộ nhớ.
@@ -232,15 +240,17 @@ Khi bấm nút, AnimatedContainer tự so sánh kích thước cũ và mới r�
 
 <div class="grid grid-cols-2 gap-6 pt-4 text-center">
   <div class="flex flex-col items-center">
-    <div class="text-sm font-semibold text-slate-700 mb-2">Motion Animation (GIF)</div>
-    <img src="/images/drag_spring_motion.gif" class="max-h-[260px] rounded border shadow-sm" />
+    <div class="text-sm font-semibold text-slate-700 mb-2">Rest State (Offset 0, 0)</div>
+    <img src="/images/comp_drag_rest.png" class="max-h-[260px] rounded border shadow-sm" />
   </div>
   <div class="flex flex-col items-center">
-    <div class="text-sm font-semibold text-slate-700 mb-2">Dynamic Tilt State</div>
+    <div class="text-sm font-semibold text-slate-700 mb-2">Dynamic Tilt State (Under Drag)</div>
     <img src="/images/comp_drag_active.png" class="max-h-[260px] rounded border shadow-sm" />
   </div>
 </div>
 
+---
+layout: two-cols
 ---
 
 # 10. Explicit Gestures: Mechanics
@@ -249,51 +259,52 @@ Khi bấm nút, AnimatedContainer tự so sánh kích thước cũ và mới r�
 - **SpringSimulation (`onPanEnd`):** Runs physical recoil back to `(0, 0)` preserving release inertia.
 - **Resource Teardown:** Explicit disposal in `State.dispose()`.
 
+::right::
+
+<div class="flex justify-center pt-2">
+  <img src="/images/comp_drag_moving.png" class="max-h-[250px] rounded border shadow-sm" />
+</div>
+
 <!--
 Sử dụng GestureDetector kết hợp SpringSimulation. Góc nghiêng tự tính theo độ dời pan. Buông tay ra là thẻ tự nảy đàn hồi về gốc theo đúng vận tốc tay người dùng.
--->
-
----
-
-# 11. Automated Test Suite
-
-5/5 Test Specifications Passed (100% ~ 2.5s):
-
-1. **Launch & Layout:** Validates Material 3 rendering of all three modules.
-2. **Implicit Motion:** Tests smooth interpolation across intermediate frames.
-3. **Gesture Drag & Recoil:** Tests 80px drag displacement and spring return.
-4. **Non-Blocking Async:** Verifies UI pipeline responsiveness during simulated network work.
-5. **Memory Leak Teardown:** Confirms zero lingering tickers after widget destruction.
-
-```text
-flutter test: All tests passed! (5/5)
-dart analyze: No issues found!
-```
-
-<!--
-Toàn bộ mã nguồn đã được kiểm thử tự động 5/5 kịch bản, xác thực không còn Ticker nào bị bỏ quên khi màn hình bị unmount.
 -->
 
 ---
 layout: two-cols
 ---
 
-# 12. Decision Matrix
+# 11. Automated Test Suite
 
-### Implicit Animations (Default)
-- State-driven styling changes.
-- Unidirectional transitions (A → B).
-- **Benefits:** Zero memory leaks, minimal boilerplate, low maintenance.
+5/5 Test Specifications Passed (100% ~ 2.5s):
+
+1. **Launch & Layout:** Material 3 structure verified.
+2. **Implicit Motion:** Frame interpolation tested.
+3. **Gesture Drag & Recoil:** 80px pan displacement verified.
+4. **Non-Blocking Async:** Responsiveness preserved.
+5. **Memory Leak Teardown:** Zero lingering tickers.
+
+```text
+flutter test: 5/5 passed
+dart analyze: 0 issues
+```
 
 ::right::
 
-<div class="pt-10">
+<div class="flex flex-col items-center pt-6">
+  <div class="text-xs font-semibold text-slate-500 mb-2">Morphing Button Async State</div>
+  <img src="/images/comp_button.png" class="max-h-[140px] rounded border shadow-sm" />
+</div>
 
-### Explicit Animations (Advanced)
-- Repeating, looping, or reversible sequences.
-- Direct gesture synchronization (Pan / Drag).
-- **Requirement:** Rigorous `dispose()` lifecycle management.
+<!--
+Toàn bộ mã nguồn đã được kiểm thử tự động 5/5 kịch bản, xác thực không còn Ticker nào bị bỏ quên khi màn hình bị unmount.
+-->
 
+---
+
+# 12. Decision Matrix
+
+<div class="flex justify-center pt-4">
+  <img src="/images/diag_decision.svg" class="max-h-[340px]" />
 </div>
 
 <!--
