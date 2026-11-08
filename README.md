@@ -31,6 +31,8 @@
 |:---:|:---|:---|:---:|:---:|
 | **01** | Chủ đề 04: Kiến trúc Clean Architecture & Dependency Injection | Clean Architecture, DIP, `get_it`, `flutter_bloc`, Mocktail Unit Test | Hoàn thành | [week_01/](week_01) |
 | **02** | Chủ đề 02: Lập trình Bất đồng bộ với Future & Stream trong Flutter | Dart Event Loop, `async/await`, `StreamController`, `StreamBuilder`, Resource Clean-up, `emitsInOrder` Test | Hoàn thành | [week_02/](week_02) |
+| **03** | Chủ đề 04: Thiết kế giao diện đa phong cách và nguyên tắc UX | Material 3 vs Apple HIG, 8dp Grid, Dynamic Color HCT, Accessibility Touch Bounds, 0-Warning | Hoàn thành | [week_03/](week_03) |
+| **04** | Chủ đề 08: Animation và cử chỉ nâng cao | Implicit vs Explicit Animation, Vsync Ticker Lifecycle, Memory Leak Prevention, Gesture Arena, Non-blocking UX | Đang thực hiện | [week_04/](week_04) |
 
 ---
 
