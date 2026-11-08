@@ -200,18 +200,19 @@ Demo App Structure (`week_04/app`):
 -->
 
 ---
-layout: two-cols
----
 
 # 9. Implicit Motion: State Interpolation
 
-### Motion Animation
-<img src="/images/implicit_motion.gif" class="max-h-[220px] rounded border shadow-sm" />
-
-::right::
-
-### Target State
-<img src="/images/comp_implicit_expanded.png" class="max-h-[220px] rounded border shadow-sm" />
+<div class="grid grid-cols-2 gap-6 pt-4 text-center">
+  <div class="flex flex-col items-center">
+    <div class="text-sm font-semibold text-slate-700 mb-2">Motion Animation (GIF)</div>
+    <img src="/images/implicit_motion.gif" class="max-h-[260px] rounded border shadow-sm" />
+  </div>
+  <div class="flex flex-col items-center">
+    <div class="text-sm font-semibold text-slate-700 mb-2">Target Expanded State</div>
+    <img src="/images/comp_implicit_expanded.png" class="max-h-[260px] rounded border shadow-sm" />
+  </div>
+</div>
 
 ---
 
@@ -226,18 +227,19 @@ Khi bấm nút, AnimatedContainer tự so sánh kích thước cũ và mới r�
 -->
 
 ---
-layout: two-cols
----
 
 # 10. Explicit Gestures: Spring Physics
 
-### Motion Animation
-<img src="/images/drag_spring_motion.gif" class="max-h-[220px] rounded border shadow-sm" />
-
-::right::
-
-### Dynamic Tilt State
-<img src="/images/comp_drag_active.png" class="max-h-[220px] rounded border shadow-sm" />
+<div class="grid grid-cols-2 gap-6 pt-4 text-center">
+  <div class="flex flex-col items-center">
+    <div class="text-sm font-semibold text-slate-700 mb-2">Motion Animation (GIF)</div>
+    <img src="/images/drag_spring_motion.gif" class="max-h-[260px] rounded border shadow-sm" />
+  </div>
+  <div class="flex flex-col items-center">
+    <div class="text-sm font-semibold text-slate-700 mb-2">Dynamic Tilt State</div>
+    <img src="/images/comp_drag_active.png" class="max-h-[260px] rounded border shadow-sm" />
+  </div>
+</div>
 
 ---
 
