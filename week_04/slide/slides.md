@@ -63,11 +63,17 @@ Nội dung báo cáo gồm 2 phần: Cơ chế cốt lõi và Ứng dụng demo 
 
 # 1. Animation & UX Roles
 
-| Pillar | Focus | Core Value |
-| :--- | :--- | :--- |
-| **Spatial Continuity** | State transitions | Eliminates cognitive friction and visual disorientation |
-| **Focus Guidance** | Attention direction | Guides the eye to mutated or newly rendered elements |
-| **Touch Feedback** | Sensory confirmation (< 100ms) | Confirms input instantly, prevents duplicate taps |
+```mermaid
+graph LR
+    A[Spatial Continuity] -->|Eliminates cognitive jump| D[Natural UX]
+    B[Focus Guidance] -->|Directs attention to state mutations| D
+    C[Touch Feedback < 100ms] -->|Confirms intent & prevents double-taps| D
+    
+    style A fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style B fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style C fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style D fill:#f1f5f9,stroke:#475569,stroke-width:2px
+```
 
 <!--
 Animation giải quyết 3 bài toán UX lớn: Tính liên tục không gian, Dẫn hướng mắt, và Phản hồi tức thì dưới 100ms.
@@ -105,14 +111,16 @@ layout: two-cols
 
 # 3. Flutter Motion Architecture
 
-```text
-[ Widgets Layer ]      Declarative widgets (AnimatedContainer, SlideTransition)
-       ↓
-[ Animation Layer ]    AnimationController, Tween<T>, CurvedAnimation
-       ↓
-[ Engine Scheduler ]   Ticker locks to OS hardware VSync (60Hz / 120Hz)
-       ↓
-[ GPU Rendering ]      Transform Layer mutations (bypasses widget subtree rebuilds)
+```mermaid
+flowchart TD
+    W["Widgets Layer (AnimatedContainer / SlideTransition)"] --> A["Animation Layer (AnimationController, Tween, Curves)"]
+    A --> S["Engine Scheduler (TickerProvider hooked to 60/120Hz VSync)"]
+    S --> G["GPU Rendering (Direct Layer Transform - No Widget Rebuild)"]
+
+    style W fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style A fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style S fill:#fef9c3,stroke:#ca8a04,stroke-width:2px
+    style G fill:#f3e8ff,stroke:#9333ea,stroke-width:2px
 ```
 
 <!--
@@ -139,14 +147,24 @@ Implicit cực kỳ an toàn vì không thể rò rỉ bộ nhớ, nhưng khi c�
 
 # 5. Explicit Lifecycle & Memory Safety
 
-```text
-[initState()] ───────> [Ticker Hook] ───────> [Active Frames] ───────> [dispose()]
-Initialize             Subscribe to           Frame-by-frame          Cancel Ticker &
-AnimationController    VSync cadence          interpolation           release resources
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as State Widget
+    participant AC as AnimationController
+    participant T as Ticker / VSync
+    participant GC as Garbage Collector
+
+    UI->>AC: initState() with vsync: this
+    AC->>T: Register frame callback
+    T-->>AC: Hardware VSync ticks (60/120 fps)
+    Note over UI,AC: Unmounting Widget
+    UI->>AC: dispose()
+    AC->>T: Unregister Ticker callback
+    Note over GC: Memory safely reclaimed (Zero Leaks)
 ```
 
-> **Memory Leak Hazard:**  
-> Omitting `controller.dispose()` retains `TickerProvider` in the Engine Scheduler via a **Strong Reference**, preventing the Garbage Collector from freeing the unmounted route.
+> **Memory Leak Hazard:** Omitting `dispose()` keeps `TickerProvider` retained in the Engine Scheduler via a **Strong Reference**, preventing GC unmount.
 
 <!--
 Vòng đời bắt đầu từ initState và kết thúc bắt buộc tại dispose. Quên dispose sẽ tạo Strong Reference khiến Garbage Collector không thể giải phóng màn hình.
@@ -156,10 +174,16 @@ Vòng đời bắt đầu từ initState và kết thúc bắt buộc tại disp
 
 # 6. Gesture Arena & Disambiguation
 
-```text
-PointerDown  ───────>  PointerMove (> 18dp)  ───────>  Arena Sweep  ───────>  PointerUp
-Register all           PanRecognizer claims            Cancel Tap              Trigger Spring
-recognizers            VICTORY                         recognizer              recoil simulation
+```mermaid
+flowchart LR
+    PD["1. PointerDown<br/>(Register Recognizers)"] --> PM["2. PointerMove > 18dp<br/>(Pan Recognizer Wins)"]
+    PM --> SW["3. Arena Sweep<br/>(Reject Tap Recognizer)"]
+    SW --> PU["4. PointerUp<br/>(SpringSimulation Recoil)"]
+
+    style PD fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style PM fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style SW fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style PU fill:#dcfce7,stroke:#16a34a,stroke-width:2px
 ```
 
 - **2D Pan Tracking:** Real-time translation with dynamic tilt angle calculations.
@@ -218,12 +242,12 @@ layout: two-cols
 
 # 9. Implicit Motion: State Interpolation
 
-### Rest State
-<img src="/images/comp_implicit_rest.png" class="max-h-[220px] rounded border shadow-sm" />
+### Motion Animation
+<img src="/images/implicit_motion.gif" class="max-h-[220px] rounded border shadow-sm" />
 
 ::right::
 
-### Expanded State
+### Target State
 <img src="/images/comp_implicit_expanded.png" class="max-h-[220px] rounded border shadow-sm" />
 
 ---
@@ -244,12 +268,12 @@ layout: two-cols
 
 # 10. Explicit Gestures: Spring Physics
 
-### Rest State (Offset 0, 0)
-<img src="/images/comp_drag_rest.png" class="max-h-[220px] rounded border shadow-sm" />
+### Motion Animation
+<img src="/images/drag_spring_motion.gif" class="max-h-[220px] rounded border shadow-sm" />
 
 ::right::
 
-### Pan & Dynamic Tilt
+### Dynamic Tilt State
 <img src="/images/comp_drag_active.png" class="max-h-[220px] rounded border shadow-sm" />
 
 ---
