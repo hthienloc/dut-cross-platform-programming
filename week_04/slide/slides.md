@@ -34,24 +34,25 @@ layout: two-cols
 
 ### Part 1: Core Mechanics
 1. Animation & UX Roles
-2. Technical Requirements
-3. Flutter Motion Architecture
-4. Implicit vs Explicit Matrix
-5. Explicit Lifecycle & Memory Safety
-6. Gesture Arena & Disambiguation
-7. UX Latency Thresholds
+2. Core Terminology & Concepts
+3. Technical Requirements
+4. Flutter Motion Architecture
+5. Implicit vs Explicit Matrix
+6. Explicit Lifecycle & Memory Safety
+7. Gesture Arena & Disambiguation
+8. UX Latency Thresholds
 
 ::right::
 
 <div class="pt-10">
 
 ### Part 2: Implementation & Evidence
-8. Architecture & Motion Tokens
-9. Implicit Motion: State Interpolation
-10. Explicit Gestures: Spring Physics
-11. Automated Test Suite
-12. Decision Matrix
-13. References
+9. Architecture & Motion Tokens
+10. Implicit Motion: State Interpolation
+11. Explicit Gestures: Spring Physics
+12. Automated Test Suite
+13. Decision Matrix
+14. References
 
 </div>
 
@@ -72,10 +73,48 @@ Animation giải quyết 3 bài toán UX lớn: Tính liên tục không gian, D
 -->
 
 ---
+
+# 2. Core Terminology & Concepts
+
+<div class="grid grid-cols-2 gap-4 pt-2 text-xs">
+  <div class="p-3 bg-white rounded-lg border-l-4 border-blue-500 shadow-sm">
+    <div class="font-bold text-blue-700 text-sm mb-1">Implicit Animations</div>
+    <div class="text-slate-600 leading-relaxed">
+      <b>Declarative (Tự nội suy):</b> Nhà phát triển chỉ khai báo giá trị đích (Target Value); framework tự động quản lý controller và tính toán biến thiên từng khung hình.
+    </div>
+  </div>
+
+  <div class="p-3 bg-white rounded-lg border-l-4 border-amber-500 shadow-sm">
+    <div class="font-bold text-amber-700 text-sm mb-1">Explicit Animations</div>
+    <div class="text-slate-600 leading-relaxed">
+      <b>Imperative (Chủ động điều khiển):</b> Sử dụng <code>AnimationController</code> để chủ động điều khiển phát, lặp, đảo chiều và gắn kết theo tọa độ kéo thả ngón tay.
+    </div>
+  </div>
+
+  <div class="p-3 bg-white rounded-lg border-l-4 border-green-500 shadow-sm">
+    <div class="font-bold text-green-700 text-sm mb-1">Gesture Arena</div>
+    <div class="text-slate-600 leading-relaxed">
+      <b>Đấu trường phân giải xung đột:</b> Cơ chế trọng tài phân giải tranh chấp khi nhiều bộ nhận diện cử chỉ (Tap, Pan, LongPress) cùng bắt một điểm chạm trên màn hình.
+    </div>
+  </div>
+
+  <div class="p-3 bg-white rounded-lg border-l-4 border-purple-500 shadow-sm">
+    <div class="font-bold text-purple-700 text-sm mb-1">Non-blocking UX</div>
+    <div class="text-slate-600 leading-relaxed">
+      <b>Chuyển động không khóa luồng:</b> Hiệu ứng chuyển động chạy độc lập, không đóng băng hoặc trì hoãn luồng tiếp nhận sự kiện cảm ứng của người dùng.
+    </div>
+  </div>
+</div>
+
+<!--
+Giải thích 4 thuật ngữ nền tảng: Implicit (tự nội suy), Explicit (chủ động điều khiển), Gesture Arena (trọng tài giải quyết xung đột chạm), và Non-blocking (không khóa luồng tương tác).
+-->
+
+---
 layout: two-cols
 ---
 
-# 2. Technical Requirements
+# 3. Technical Requirements
 
 ### Theoretical Foundations
 - **Implicit Animations:** Declarative target interpolation.
