@@ -72,3 +72,7 @@ migrate_working_dir/
 # Exceptions to keep slide PDFs
 !*.pdf
 flutter-env.sh
+
+# Slidev build artifacts
+week_04/slide/dist/
+week_04/slide/node_modules/
