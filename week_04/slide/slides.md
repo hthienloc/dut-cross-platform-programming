@@ -275,22 +275,17 @@ layout: two-cols
 
 # 11. Automated Test Suite
 
-5/5 Test Specifications Passed (100% ~ 2.5s):
+Verification Scenarios (5 Test Specs):
 
-1. **Launch & Layout:** Material 3 structure verified.
-2. **Implicit Motion:** Frame interpolation tested.
-3. **Gesture Drag & Recoil:** 80px pan displacement verified.
-4. **Non-Blocking Async:** Responsiveness preserved.
-5. **Memory Leak Teardown:** Zero lingering tickers.
-
-```text
-flutter test: 5/5 passed
-dart analyze: 0 issues
-```
+- **Widget Rendering:** Validates Material 3 layout structure.
+- **Interpolation:** Verifies smooth frame value progression.
+- **Gesture Recoil:** Asserts 2D pan tracking and spring return.
+- **Non-blocking Async:** Verifies UI pipeline during background tasks.
+- **Resource Teardown:** Asserts 100% ticker disposal on unmount.
 
 ::right::
 
-<div class="flex flex-col items-center pt-6">
+<div class="flex flex-col items-center pt-8">
   <div class="text-xs font-semibold text-slate-500 mb-2">Morphing Button Async State</div>
   <img src="/images/comp_button.png" class="max-h-[140px] rounded border shadow-sm" />
 </div>
