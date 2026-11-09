@@ -44,6 +44,13 @@ class DragSpringCardState extends State<DragSpringCard>
     });
   }
 
+  @visibleForTesting
+  void setTestOffset(Offset offset) {
+    setState(() {
+      _dragOffset = offset;
+    });
+  }
+
   @override
   void dispose() {
     // CRITICAL: Always dispose AnimationController before calling super.dispose()

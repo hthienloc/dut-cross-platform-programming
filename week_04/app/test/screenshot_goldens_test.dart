@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:motion_gesture_app/animations/explicit_drag_card.dart';
+import 'package:motion_gesture_app/animations/implicit_card.dart';
+import 'package:motion_gesture_app/animations/morphing_button.dart';
 import 'package:motion_gesture_app/main.dart';
 
 Future<void> loadFonts() async {
@@ -29,7 +32,7 @@ void main() {
     await loadFonts();
   });
 
-  testWidgets('Capture screenshots for Week 04 presentation', (WidgetTester tester) async {
+  testWidgets('Capture exact screenshots for Week 04 presentation', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1080, 2160);
     tester.view.devicePixelRatio = 2.0;
     addTearDown(() {
@@ -54,16 +57,22 @@ void main() {
       matchesGoldenFile('goldens/implicit_expanded.png'),
     );
 
-    // 3. Drag Gesture Card
-    final dragCardFinder = find.text('Interactive Drag & Spring Physics');
-    final gesture = await tester.startGesture(tester.getCenter(dragCardFinder));
-    await gesture.moveBy(const Offset(110.0, 30.0));
+    // Revert Implicit card back to rest
+    await tester.tap(find.text('Show Less'));
+    await tester.pumpAndSettle();
+
+    // 3. Drag Gesture Card - Active state under pointer
+    final dragCardState = tester.state<DragSpringCardState>(find.byType(DragSpringCard));
+    // Manually set drag offset to simulate real mid-drag with rotation tilt
+    dragCardState.setTestOffset(const Offset(110.0, 35.0));
     await tester.pump();
+
     await expectLater(
       find.byType(MotionGestureApp),
       matchesGoldenFile('goldens/explicit_dragged.png'),
     );
-    await gesture.up();
+
+    dragCardState.setTestOffset(Offset.zero);
     await tester.pumpAndSettle();
   });
 }
