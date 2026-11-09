@@ -76,38 +76,45 @@ Animation giải quyết 3 bài toán UX lớn: Tính liên tục không gian, D
 
 # 2. Core Terminology & Concepts
 
-<div class="grid grid-cols-2 gap-5 pt-3">
-  <div class="p-4 bg-white rounded-xl border-l-4 border-blue-500 shadow-sm">
-    <div class="font-bold text-blue-700 text-base mb-1.5">Implicit Animations</div>
+<div class="grid grid-cols-2 gap-4 pt-1">
+  <div class="p-3.5 bg-white rounded-xl border-l-4 border-blue-500 shadow-sm">
+    <div class="font-bold text-blue-700 text-base mb-1">Implicit Animations</div>
     <div class="text-slate-700 text-sm leading-relaxed">
       <b>Declarative (Tự nội suy):</b> Chỉ khai báo giá trị đích; framework tự tính toán vi phân qua từng khung hình.
     </div>
   </div>
 
-  <div class="p-4 bg-white rounded-xl border-l-4 border-amber-500 shadow-sm">
-    <div class="font-bold text-amber-700 text-base mb-1.5">Explicit Animations</div>
+  <div class="p-3.5 bg-white rounded-xl border-l-4 border-amber-500 shadow-sm">
+    <div class="font-bold text-amber-700 text-base mb-1">Explicit Animations</div>
     <div class="text-slate-700 text-sm leading-relaxed">
       <b>Imperative (Chủ động điều khiển):</b> Dùng <code>AnimationController</code> để phát, lặp, đảo chiều và bám cử chỉ tay.
     </div>
   </div>
 
-  <div class="p-4 bg-white rounded-xl border-l-4 border-green-500 shadow-sm">
-    <div class="font-bold text-green-700 text-base mb-1.5">Gesture Arena</div>
+  <div class="p-3.5 bg-white rounded-xl border-l-4 border-green-500 shadow-sm">
+    <div class="font-bold text-green-700 text-base mb-1">Gesture Arena</div>
     <div class="text-slate-700 text-sm leading-relaxed">
-      <b>Đấu trường phân giải:</b> Cơ chế trọng tài phân giải tranh chấp khi nhiều cử chỉ cùng bắt một điểm chạm.
+      <b>Đấu trường phân giải:</b> Cơ chế trọng tài giải quyết xung đột khi nhiều cử chỉ cùng bắt một điểm chạm.
     </div>
   </div>
 
-  <div class="p-4 bg-white rounded-xl border-l-4 border-purple-500 shadow-sm">
-    <div class="font-bold text-purple-700 text-base mb-1.5">Non-blocking UX</div>
+  <div class="p-3.5 bg-white rounded-xl border-l-4 border-purple-500 shadow-sm">
+    <div class="font-bold text-purple-700 text-base mb-1">Non-blocking UX</div>
     <div class="text-slate-700 text-sm leading-relaxed">
-      <b>Không khóa tương tác:</b> Chuyển động chạy độc lập, không đóng băng luồng nhận sự kiện cảm ứng của người dùng.
+      <b>Không khóa tương tác:</b> Chuyển động chạy độc lập, không đóng băng luồng nhận sự kiện cảm ứng.
     </div>
   </div>
 </div>
 
+<div class="p-3 bg-white rounded-xl border-l-4 border-cyan-500 shadow-sm mt-3">
+  <div class="font-bold text-cyan-800 text-base mb-0.5">VSync (Vertical Synchronization)</div>
+  <div class="text-slate-700 text-sm leading-relaxed">
+    <b>Đồng bộ làm tươi phần cứng:</b> Tín hiệu xung nhịp từ màn hình (60Hz / 120Hz). Flutter dùng <code>Ticker</code> khóa chặt tốc độ tính frame theo nhịp VSync, giúp triệt tiêu hiện tượng xé hình (screen tearing) và tiết kiệm pin khi màn hình nghỉ.
+  </div>
+</div>
+
 <!--
-Giải thích 4 thuật ngữ nền tảng: Implicit (tự nội suy), Explicit (chủ động điều khiển), Gesture Arena (trọng tài giải quyết xung đột chạm), và Non-blocking (không khóa luồng tương tác).
+Giải thích 5 thuật ngữ nền tảng: Implicit, Explicit, Gesture Arena, Non-blocking UX, và VSync (Vertical Synchronization) - xung nhịp đồng bộ phần cứng màn hình.
 -->
 
 ---

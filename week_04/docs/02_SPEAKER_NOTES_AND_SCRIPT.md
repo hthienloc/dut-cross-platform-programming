@@ -21,11 +21,12 @@ Animation không sinh ra để trang trí mà giải quyết 3 bài toán nhận
 ---
 
 ### Slide 4: 2. Core Terminology & Concepts
-Bốn khái niệm cốt lõi bao gồm:
+Năm khái niệm cốt lõi bao gồm:
 1. **Implicit Animation**: Cơ chế tự nội suy theo tư duy Declarative; ta chỉ khai báo giá trị đích, framework tự tính toán vi phân qua từng frame.
 2. **Explicit Animation**: Cơ chế chủ động theo tư duy Imperative; ta dùng `AnimationController` để kiểm soát phát, lặp, đảo chiều và gắn cử chỉ tay.
 3. **Gesture Arena**: Đấu trường đóng vai trò trọng tài phân giải tranh chấp khi nhiều cử chỉ cùng bắt một điểm chạm.
-4. **Non-blocking UX**: Nguyên tắc chuyển động chạy độc lập, không đóng băng hoặc làm chậm luồng cảm ứng của người dùng.  
+4. **Non-blocking UX**: Nguyên tắc chuyển động chạy độc lập, không đóng băng hoặc làm chậm luồng cảm ứng của người dùng.
+5. **VSync (Vertical Synchronization)**: Tín hiệu xung nhịp phần cứng từ màn hình (60Hz hoặc 120Hz). Flutter dùng `Ticker` gắn chặt việc tính toán từng frame với nhịp VSync này để triệt tiêu hiện tượng xé hình (screen tearing) và tự động ngắt tính toán tiết kiệm pin khi màn hình nghỉ.  
 *(Chuyển slide)* Dựa trên những khái niệm này, đề tài đặt ra các yêu cầu kỹ thuật cụ thể cần đạt được.
 
 ---
